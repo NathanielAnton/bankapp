@@ -1,0 +1,13 @@
+package com.example.bankapp.repository;
+
+import com.example.bankapp.entity.Account;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+import java.util.List;
+
+@Repository
+public interface AccountRepository extends JpaRepository<Account, Long> {
+    
+    // Méthode personnalisée
+    List<Account> findByClientId(Long clientId);
+}

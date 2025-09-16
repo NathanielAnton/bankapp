@@ -1,11 +1,15 @@
-package com.example.bankapp;
+package com.example.bankapp.entity;
 
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 @Entity
 @Table(name = "transactions")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -13,10 +17,12 @@ public class Transaction {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id", nullable = false)
+    @JsonManagedReference // ← Côté parent de la relation avec Account
     private Account account;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "destinataire_account_id")
+    @JsonManagedReference // ← Côté parent de la relation avec Account (destinataire)
     private Account destinataireAccount;
 
     @Enumerated(EnumType.STRING)

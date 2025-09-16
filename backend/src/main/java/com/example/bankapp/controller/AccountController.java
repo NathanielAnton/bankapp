@@ -1,0 +1,52 @@
+package com.example.bankapp.controller;
+
+import com.example.bankapp.dto.request.AccountRequest;
+import com.example.bankapp.dto.response.AccountResponse;
+import com.example.bankapp.service.AccountService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/accounts")
+public class AccountController {
+
+    private final AccountService accountService;
+
+    public AccountController(AccountService accountService) {
+        this.accountService = accountService;
+    }
+
+    // CREATE
+    @PostMapping
+    public ResponseEntity<AccountResponse> createAccount(@RequestBody AccountRequest dto) {
+        return new ResponseEntity<>(accountService.createAccount(dto), HttpStatus.CREATED);
+    }
+
+    // READ ALL
+    @GetMapping
+    public ResponseEntity<List<AccountResponse>> getAllAccounts() {
+        return ResponseEntity.ok(accountService.getAllAccounts());
+    }
+
+    // READ ONE
+    @GetMapping("/{id}")
+    public ResponseEntity<AccountResponse> getAccountById(@PathVariable Long id) {
+        return ResponseEntity.ok(accountService.getAccountById(id));
+    }
+
+    // UPDATE
+    @PutMapping("/{id}")
+    public ResponseEntity<AccountResponse> updateAccount(@PathVariable Long id, @RequestBody AccountRequest dto) {
+        return ResponseEntity.ok(accountService.updateAccount(id, dto));
+    }
+
+    // DELETE
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteAccount(@PathVariable Long id) {
+        accountService.deleteAccount(id);
+        return ResponseEntity.noContent().build();
+    }
+}

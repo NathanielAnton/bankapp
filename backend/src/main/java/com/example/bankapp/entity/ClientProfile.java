@@ -1,12 +1,16 @@
-package com.example.bankapp;
+package com.example.bankapp.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "client_profiles")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class ClientProfile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -14,9 +18,11 @@ public class ClientProfile {
 
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonManagedReference // ← Côté parent de la relation avec User
     private User user;
     
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<Account> accounts = new ArrayList<>();
 
     @Column(nullable = false)

@@ -1,26 +1,32 @@
-package com.example.bankapp;
+package com.example.bankapp.entity;
 
 import jakarta.persistence.*;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.time.LocalDate;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "accounts")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonBackReference // ← Côté enfant de la relation avec Transaction
     private List<Transaction> transactions = new ArrayList<>();
 
     @OneToMany(mappedBy = "destinataireAccount", cascade = CascadeType.ALL, fetch = FetchType.LAZY)  
+    @JsonBackReference // ← Côté enfant de la relation avec Transaction (destinataire)
     private List<Transaction> transactionsRecues = new ArrayList<>();
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id", nullable = false)
+    @JsonIgnore  
     private ClientProfile client;
 
     @Enumerated(EnumType.STRING)
@@ -36,7 +42,7 @@ public class Account {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private StatutCompte statut = StatutCompte.ACTIF;
-
+    
     // Enums
     public enum TypeCompte {
         COURANT("Compte Courant"),
@@ -84,7 +90,7 @@ public class Account {
         this.type = type;
         this.solde = soldeInitial != null ? soldeInitial : BigDecimal.ZERO;
     }
-
+    
     // Getters and Setters
     public Long getId() {
         return id;
