@@ -1,0 +1,493 @@
+/* Styles pour la page d'inscription - Application bancaire (Thème Vert Sauge) */
+
+/* Variables CSS - Palette Vert Sauge */
+:root {
+  --primary-color: #16a34a;
+  --primary-dark: #15803d;
+  --primary-light: #22c55e;
+  --sage-green: #84a98c;
+  --sage-green-dark: #6b8e6b;
+  --sage-green-light: #a3b8a7;
+  --secondary-color: #64748b;
+  --success-color: #059669;
+  --danger-color: #dc2626;
+  --warning-color: #d97706;
+  --light-bg: #f0f4f1;
+  --sage-bg: #f8faf9;
+  --white: #ffffff;
+  --gray-50: #f9fafb;
+  --gray-100: #f3f4f6;
+  --gray-200: #e5e7eb;
+  --gray-300: #d1d5db;
+  --gray-700: #374151;
+  --gray-900: #111827;
+  --sage-accent: #d4e6d7;
+  --border-radius: 8px;
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-sage: 0 4px 6px -1px rgb(132 169 140 / 0.2), 0 2px 4px -2px rgb(132 169 140 / 0.1);
+}
+
+/* Styles généraux */
+body {
+  font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, var(--sage-bg) 0%, var(--sage-accent) 50%, var(--light-bg) 100%);
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  color: var(--gray-700);
+  line-height: 1.6;
+}
+
+/* Conteneur principal */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+/* Centrage de la carte */
+.row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 4rem);
+}
+
+.col-md-6 {
+  width: 100%;
+  max-width: 450px;
+}
+
+/* Styles de la carte */
+.card {
+  background: var(--white);
+  border-radius: 16px;
+  box-shadow: var(--shadow-sage);
+  border: 1px solid var(--sage-accent);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--sage-green), var(--primary-color), var(--sage-green-light));
+  z-index: 1;
+}
+
+.card:hover {
+  box-shadow: 0 20px 25px -5px rgb(132 169 140 / 0.15), 0 8px 10px -6px rgb(132 169 140 / 0.1);
+  transform: translateY(-2px);
+}
+
+/* En-tête de la carte */
+.card-header {
+  background: linear-gradient(135deg, var(--sage-green) 0%, var(--sage-green-dark) 100%);
+  padding: 1.75rem;
+  border: none;
+  position: relative;
+}
+
+.card-header h3 {
+  color: var(--white);
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  text-align: center;
+  letter-spacing: -0.025em;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Corps de la carte */
+.card-body {
+  padding: 2rem;
+  background: linear-gradient(180deg, var(--white) 0%, var(--gray-50) 100%);
+}
+
+/* Styles des formulaires */
+form {
+  width: 100%;
+}
+
+.mb-3 {
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+
+/* Labels avec accent vert sauge */
+.form-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--sage-green-dark);
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.025em;
+  position: relative;
+}
+
+.form-label::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 20px;
+  height: 2px;
+  background: var(--sage-green-light);
+  border-radius: 1px;
+  opacity: 0.6;
+}
+
+/* Champs de saisie */
+.form-control {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  border: 2px solid var(--gray-200);
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--gray-900);
+  background-color: var(--white);
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: var(--sage-green);
+  box-shadow: 0 0 0 3px rgb(132 169 140 / 0.15);
+  background-color: var(--white);
+  transform: translateY(-1px);
+}
+
+.form-control:hover:not(:focus) {
+  border-color: var(--sage-green-light);
+  box-shadow: 0 2px 4px rgb(132 169 140 / 0.1);
+}
+
+.form-control::placeholder {
+  color: var(--secondary-color);
+  font-size: 0.9rem;
+}
+
+/* États de validation avec thème vert */
+.form-control:valid {
+  border-color: var(--success-color);
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%23059669' d='m2.3 6.73.94-.94 1.44 1.44L6.17 4.74 5.23 3.8l-1.5 1.5-.94-.94z'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 1rem 1rem;
+}
+
+.form-control:invalid:not(:placeholder-shown) {
+  border-color: var(--danger-color);
+}
+
+/* Messages d'alerte */
+.alert {
+  padding: 1rem 1.25rem;
+  border-radius: var(--border-radius);
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+  border: none;
+  position: relative;
+}
+
+.alert-danger {
+  background: linear-gradient(135deg, #fef2f2 0%, #fde8e8 100%);
+  color: var(--danger-color);
+  border-left: 4px solid var(--danger-color);
+}
+
+.alert-success {
+  background: linear-gradient(135deg, #f0fdf4 0%, #e8f5e8 100%);
+  color: var(--success-color);
+  border-left: 4px solid var(--success-color);
+}
+
+/* Boutons avec thème vert sauge */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.875rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.5;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  letter-spacing: 0.025em;
+}
+
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.btn:hover::before {
+  left: 100%;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--sage-green) 0%, var(--primary-color) 50%, var(--sage-green-dark) 100%);
+  color: var(--white);
+  box-shadow: var(--shadow-md);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: linear-gradient(135deg, var(--sage-green-dark) 0%, var(--primary-dark) 50%, var(--sage-green-dark) 100%);
+  box-shadow: 0 8px 25px rgb(132 169 140 / 0.3);
+  transform: translateY(-2px);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  background: var(--gray-300);
+}
+
+.w-100 {
+  width: 100%;
+}
+
+/* Spinner de chargement */
+.spinner-border {
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  vertical-align: text-bottom;
+  border: 0.125em solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: spinner-border 0.75s linear infinite;
+}
+
+.spinner-border-sm {
+  width: 0.875rem;
+  height: 0.875rem;
+  border-width: 0.1em;
+}
+
+.me-2 {
+  margin-right: 0.5rem;
+}
+
+@keyframes spinner-border {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Section de connexion */
+.text-center {
+  text-align: center;
+}
+
+.mt-3 {
+  margin-top: 1.5rem;
+}
+
+.text-center p {
+  margin: 0;
+  color: var(--secondary-color);
+  font-size: 0.9rem;
+  padding: 1rem;
+  background: linear-gradient(135deg, var(--sage-accent) 0%, transparent 100%);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--sage-accent);
+}
+
+.text-center a {
+  color: var(--sage-green-dark);
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.text-center a::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: -2px;
+  left: 0;
+  background: var(--sage-green);
+  transition: width 0.3s ease;
+}
+
+.text-center a:hover {
+  color: var(--sage-green);
+}
+
+.text-center a:hover::after {
+  width: 100%;
+}
+
+/* Indicateurs de force du mot de passe */
+.form-control[type="password"]:focus + .password-strength {
+  display: block;
+}
+
+.password-strength {
+  display: none;
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  color: var(--secondary-color);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem 0.5rem;
+  }
+  
+  .card-body {
+    padding: 1.5rem;
+  }
+  
+  .card-header {
+    padding: 1.25rem;
+  }
+  
+  .card-header h3 {
+    font-size: 1.25rem;
+  }
+  
+  .col-md-6 {
+    max-width: 100%;
+    margin: 0 1rem;
+  }
+  
+  .mb-3 {
+    margin-bottom: 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 0.5rem;
+  }
+  
+  .card-body {
+    padding: 1rem;
+  }
+  
+  .card-header {
+    padding: 1rem;
+  }
+  
+  .form-control {
+    padding: 0.75rem;
+  }
+  
+  .btn {
+    padding: 0.75rem 1.25rem;
+  }
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.card {
+  animation: fadeInUp 0.8s ease-out;
+}
+
+.form-control {
+  animation: slideInRight 0.6s ease-out;
+  animation-fill-mode: both;
+}
+
+.form-control:nth-child(1) { animation-delay: 0.1s; }
+.form-control:nth-child(2) { animation-delay: 0.2s; }
+.form-control:nth-child(3) { animation-delay: 0.3s; }
+.form-control:nth-child(4) { animation-delay: 0.4s; }
+
+/* Indicateur de sécurité avec thème vert */
+.card-header::after {
+  content: '🌿';
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: 1rem;
+  opacity: 0.7;
+}
+
+/* Amélioration de l'accessibilité */
+.form-control:focus {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+}
+
+/* Style pour les navigateurs webkit */
+.form-control::-webkit-input-placeholder {
+  color: var(--secondary-color);
+  opacity: 0.7;
+}
+
+.form-control::-moz-placeholder {
+  color: var(--secondary-color);
+  opacity: 0.7;
+}
+
+/* Focus visible pour l'accessibilité */
+.btn:focus-visible {
+  outline: 2px solid var(--sage-green-light);
+  outline-offset: 2px;
+}
+
+/* Effet de brillance sur les champs valides */
+.form-control:valid {
+  box-shadow: 0 0 0 1px var(--success-color), 0 2px 4px rgba(5, 150, 105, 0.1);
+}
+
+/* Transition douce pour tous les éléments interactifs */
+* {
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
