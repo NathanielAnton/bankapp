@@ -6,8 +6,11 @@ import com.example.bankapp.dto.request.AccountRequest;
 import com.example.bankapp.dto.response.AccountResponse;
 import com.example.bankapp.entity.Account;
 import com.example.bankapp.entity.ClientProfile;
+import com.example.bankapp.entity.User;
 import com.example.bankapp.repository.AccountRepository;
 import com.example.bankapp.repository.ClientProfileRepository;
+import com.example.bankapp.repository.UserRepository;
+import com.example.bankapp.security.JwtUtil;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -18,10 +21,17 @@ public class AccountService {
 
     private final AccountRepository accountRepository;
     private final ClientProfileRepository clientRepository;
+    private final UserRepository userRepository;
+    private final JwtUtil jwtUtil;
 
-    public AccountService(AccountRepository accountRepository, ClientProfileRepository clientRepository) {
+    public AccountService(AccountRepository accountRepository,
+                          ClientProfileRepository clientRepository,
+                          UserRepository userRepository,
+                          JwtUtil jwtUtil) {
         this.accountRepository = accountRepository;
         this.clientRepository = clientRepository;
+        this.userRepository = userRepository;
+        this.jwtUtil = jwtUtil;
     }
 
     // CREATE
@@ -78,7 +88,25 @@ public class AccountService {
         accountRepository.deleteById(id);
     }
 
-    // Mapper entité → DTO de sortie
+    // READ my accounts (via JWT token)
+    public List<AccountResponse> getMyAccounts(String token) {
+    	
+    	if (!jwtUtil.isTokenValid(token)) {
+            throw new RuntimeException("Token invalide ou expiré");
+        }
+        
+        Long userId = jwtUtil.extractId(token);
+        
+        // Trouver le client associé à cet utilisateur
+        ClientProfile client = clientRepository.findByUserId(userId)
+            .orElseThrow(() -> new RuntimeException("Client not found for user"));
+        
+        return accountRepository.findByClientId(client.getId()).stream()
+                .map(this::mapToResponse)
+                .toList();
+    }
+
+    // Mapper entité → DTO
     private AccountResponse mapToResponse(Account account) {
         AccountResponse dto = new AccountResponse();
         dto.setId(account.getId());

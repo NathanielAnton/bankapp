@@ -9,5 +9,5 @@ import com.example.bankapp.entity.ClientProfile;
 @Repository
 public interface ClientProfileRepository extends JpaRepository<ClientProfile, Long> {
     // Si besoin, tu peux ajouter des méthodes personnalisées ici, par ex :
-   // Optional<ClientProfile> findByEmail(String email);
+	Optional<ClientProfile> findByUserId(Long userId);
 }

@@ -49,4 +49,12 @@ public class AccountController {
         accountService.deleteAccount(id);
         return ResponseEntity.noContent().build();
     }
+    
+    // Get MyAcc
+    @GetMapping("/me")
+    public ResponseEntity<List<AccountResponse>> getMyAccounts(@RequestHeader("Authorization") String authHeader) {
+        // Extraire le token après "Bearer "
+        String token = authHeader.substring(7);
+        return ResponseEntity.ok(accountService.getMyAccounts(token));
+    }
 }

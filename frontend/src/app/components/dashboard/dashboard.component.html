@@ -1,1 +1,101 @@
-<p>dashboard works!</p>
+<div class="container">
+  <!-- Header -->
+  <div class="header">
+    <h1>🏦 Tableau de Bord</h1>
+    <p>Bienvenue dans votre espace bancaire personnel, <strong style="text-transform: uppercase;">{{ username }}</strong></p>
+  </div>
+
+  <!-- Summary Cards -->
+  <div class="summary">
+    <div class="summary-card">
+      <h3>Solde Total</h3>
+      <div class="value">{{ getTotalBalance() }} €</div>
+      <div class="subtitle">Tous comptes confondus</div>
+    </div>
+    <div class="summary-card">
+      <h3>Nombre de Comptes</h3>
+      <div class="value">{{ accounts.length }}</div>
+      <div class="subtitle">Comptes actifs</div>
+    </div>
+    <div class="summary-card">
+      <h3>Dernière Activité</h3>
+      <div class="value">Aujourd'hui</div>
+      <div class="subtitle">{{ getCurrentTime() }}</div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="accounts.length === 0" class="loading">
+    <div class="spinner"></div>
+    <p>Chargement de vos comptes...</p>
+  </div>
+
+  <!-- Accounts Section -->
+  <div class="accounts-section" *ngIf="accounts.length > 0">
+    <h2 class="section-title">
+      💳 Mes Comptes Bancaires
+    </h2>
+
+    <div class="accounts-grid">
+      <div 
+        *ngFor="let account of accounts; let i = index" 
+        class="account-card"
+        [ngClass]="account.type.toLowerCase()"
+        [style.animation-delay]="(i * 0.1) + 's'"
+      >
+        <!-- Header -->
+        <div class="account-header">
+          <div class="account-type">
+            <div class="account-icon">{{ getAccountIcon(account.type) }}</div>
+            <div class="account-info">
+              <h3>{{ getAccountTypeLabel(account.type) }}</h3>
+              <div class="account-number">ID: {{ account.id }}</div>
+            </div>
+          </div>
+          <div 
+            class="account-status"
+            [ngClass]="'status-' + account.statut.toLowerCase()"
+          >
+            {{ account.statut }}
+          </div>
+        </div>
+
+        <!-- Balance -->
+        <div class="account-balance">
+          <div class="balance-amount">
+            {{ account.solde }} €
+          </div>
+          <div class="balance-label">Solde Disponible</div>
+        </div>
+
+        <!-- Details -->
+        <div class="account-details">
+          <div class="detail-item">
+            <div class="detail-label">Type</div>
+            <div class="detail-value">{{ account.type }}</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">Ouverture</div>
+            <div class="detail-value">{{ formatDate(account.dateOuverture) }}</div>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="account-actions">
+          <button 
+            class="btn btn-primary"
+            (click)="handleAccountAction(account, 'transfer')"
+          >
+            Ajouter une transaction
+          </button>
+          <button 
+            class="btn btn-secondary"
+            (click)="handleAccountAction(account, 'history')"
+          >
+            Historique
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

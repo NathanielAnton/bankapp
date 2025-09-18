@@ -75,6 +75,6 @@ public class AuthService {
             throw new RuntimeException("Mot de passe incorrect");
         }
 
-        return jwtUtil.generateToken(username);
+        return jwtUtil.generateToken(user);
     }
 }
