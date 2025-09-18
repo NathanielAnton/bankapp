@@ -5,6 +5,8 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.Claims;
 import org.springframework.stereotype.Component;
 
+import com.example.bankapp.entity.User;
+
 import java.util.Date;
 
 @Component
@@ -13,14 +15,17 @@ public class JwtUtil {
     private final String SECRET_KEY = "MaSuperCleUltraSecreteQuiFaitPlusDe32Caractere123456"; // ⚠️ à mettre dans application.properties
     private final long EXPIRATION_TIME = 86400000; // 24h
 
-    public String generateToken(String username) {
+    public String generateToken(User user) {
         return Jwts.builder()
-                .setSubject(username)
+                .setSubject(user.getUsername())
+                .claim("role", user.getRole())
+                .claim("id", user.getId())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
                 .compact();
     }
+
 
     public String extractUsername(String token) {
         return getClaims(token).getSubject();

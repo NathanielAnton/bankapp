@@ -16,6 +16,7 @@ export interface RegisterRequest {
 export interface AuthResponse {
   token: string;
   message?: string;
+  username: string;
 }
 
 @Injectable({

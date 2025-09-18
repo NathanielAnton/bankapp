@@ -26,6 +26,22 @@ public class AuthService {
         this.passwordEncoder = passwordEncoder;
         this.jwtUtil = jwtUtil;
     }
+    
+    public User authenticate(String username, String password) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Utilisateur introuvable"));
+
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new RuntimeException("Mot de passe incorrect");
+        }
+
+        return user;
+    }
+
+    public String generateToken(User user) {
+        return jwtUtil.generateToken(user);
+    }
+
 
     public User register(RegisterRequest request) {
         User user = new User(

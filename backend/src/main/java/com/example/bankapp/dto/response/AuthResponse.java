@@ -5,14 +5,16 @@ public class AuthResponse {
     private String username;
     private String role;
     private String message;
+    private String token;
 
     public AuthResponse() {}
 
-    public AuthResponse(Long id, String username, String role, String message) {
+    public AuthResponse(Long id, String username, String role, String message, String token) {
         this.id = id;
         this.username = username;
         this.role = role;
         this.message = message;
+        this.token = token;
     }
 
     // Getters & Setters
@@ -39,5 +41,11 @@ public class AuthResponse {
     }
     public void setMessage(String message) {
         this.message = message;
+    }
+    public String getToken() {
+        return token;
+    }
+    public void setToken(String token) {
+        this.token = token;
     }
 }

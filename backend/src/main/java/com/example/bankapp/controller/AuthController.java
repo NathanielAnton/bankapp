@@ -25,20 +25,33 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request) {
         User user = authService.register(request);
+        String token = authService.generateToken(user);
 
         AuthResponse response = new AuthResponse(
                 user.getId(),
                 user.getUsername(),
                 user.getRole(),
-                "Inscription réussie"
+                "Inscription réussie ✅",
+                token
         );
 
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
-        String token = authService.login(request.getUsername(), request.getPassword());
-        return ResponseEntity.ok(Map.of("token", token));
+    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
+        User user = authService.authenticate(request.getUsername(), request.getPassword());
+        String token = authService.generateToken(user);
+
+        AuthResponse response = new AuthResponse(
+                user.getId(),
+                user.getUsername(),
+                user.getRole(),
+                "Connexion réussie ✅",
+                token
+        );
+
+        return ResponseEntity.ok(response);
     }
+
 }

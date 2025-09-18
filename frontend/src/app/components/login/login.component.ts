@@ -36,7 +36,8 @@ export class LoginComponent {
         this.isLoading = false;
         if (response.token) {
           this.tokenService.setToken(response.token);
-          this.router.navigate(['/']);
+          localStorage.setItem('username', response.username);
+          this.router.navigate(['/dashboard']);
         }
       },
       error: (error) => {
