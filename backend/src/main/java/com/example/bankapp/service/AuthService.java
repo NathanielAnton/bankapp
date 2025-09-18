@@ -1,11 +1,12 @@
 package com.example.bankapp.service;
 
-import com.example.bankapp.dto.request.LoginRequest;
 import com.example.bankapp.dto.request.RegisterRequest;
 import com.example.bankapp.entity.ClientProfile;
 import com.example.bankapp.entity.User;
 import com.example.bankapp.repository.ClientProfileRepository;
 import com.example.bankapp.repository.UserRepository;
+import com.example.bankapp.security.JwtUtil;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -14,13 +15,16 @@ public class AuthService {
     private final UserRepository userRepository;
     private final ClientProfileRepository clientProfileRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
 
     public AuthService(UserRepository userRepository,
                        ClientProfileRepository clientProfileRepository,
-                       PasswordEncoder passwordEncoder) {
+                       PasswordEncoder passwordEncoder,
+                       JwtUtil jwtUtil) {
         this.userRepository = userRepository;
         this.clientProfileRepository = clientProfileRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtUtil = jwtUtil;
     }
 
     public User register(RegisterRequest request) {
@@ -47,14 +51,14 @@ public class AuthService {
         return user;
     }
 
-    public User login(LoginRequest request) {
-        User user = userRepository.findByUsername(request.getUsername())
+    public String login(String username, String password) {
+        User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("Utilisateur introuvable"));
 
-        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+        if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new RuntimeException("Mot de passe incorrect");
         }
 
-        return user;
+        return jwtUtil.generateToken(username);
     }
 }

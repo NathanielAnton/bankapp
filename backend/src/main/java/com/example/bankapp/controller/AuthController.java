@@ -5,6 +5,9 @@ import com.example.bankapp.dto.request.LoginRequest;
 import com.example.bankapp.dto.request.RegisterRequest;
 import com.example.bankapp.entity.User;
 import com.example.bankapp.service.AuthService;
+
+import java.util.Map;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,16 +37,8 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
-        User user = authService.login(request);
-
-        AuthResponse response = new AuthResponse(
-                user.getId(),
-                user.getUsername(),
-                user.getRole(),
-                "Connexion réussie"
-        );
-
-        return ResponseEntity.ok(response);
+    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+        String token = authService.login(request.getUsername(), request.getPassword());
+        return ResponseEntity.ok(Map.of("token", token));
     }
 }
