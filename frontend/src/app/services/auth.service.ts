@@ -42,7 +42,7 @@ export class AuthService {
   }
 
   logout(): void {
-    localStorage.removeItem('authToken');
+    localStorage.clear();
   }
 
   isLoggedIn(): boolean {

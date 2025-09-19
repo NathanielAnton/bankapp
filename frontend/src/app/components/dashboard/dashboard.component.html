@@ -1,9 +1,22 @@
 <div class="container">
   <!-- Header -->
-  <div class="header">
+    <div class="header">
     <h1>🏦 Tableau de Bord</h1>
-    <p>Bienvenue dans votre espace bancaire personnel, <strong style="text-transform: uppercase;">{{ username }}</strong></p>
-  </div>
+    <div class="header-content">
+        <p class="welcome-text">
+            Bienvenue dans votre espace bancaire personnel, 
+            <strong style="text-transform: uppercase;">{{ username }}</strong>
+        </p>
+        <button 
+            class="btn-disconnect"
+            (click)="disconnect()"
+            title="Se déconnecter"
+        >
+            <i class="bi bi-power"></i>
+            Déconnexion
+        </button>
+        </div>
+    </div>
 
   <!-- Summary Cards -->
   <div class="summary">
@@ -29,7 +42,7 @@
     <div class="spinner"></div>
     <p>Chargement de vos comptes...</p>
   </div>
-  
+
    <!-- Actions Section -->
   <div class="actions-section" *ngIf="accounts.length > 0">
     <button class="btn btn-success" (click)="openCreateModal()">

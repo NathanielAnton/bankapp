@@ -2,6 +2,8 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms'; // ← Ajouter cette importation
 import { AccountRequest, AccountService } from '../../services/account.service';
+import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 interface Account {
   id: number;
@@ -53,11 +55,20 @@ export class DashboardComponent implements OnInit {
     { value: 'CLOTURE', label: 'Clôturé' }
   ];
 
-  constructor(private accountService: AccountService) {}
+  constructor(
+    private accountService: AccountService,
+    private router: Router,
+    private authService: AuthService
+  ) {}
 
   ngOnInit(): void {
     this.username = localStorage.getItem('username');
     this.loadAccounts();
+  }
+
+  disconnect(): void {
+    this.authService.logout();
+    this.router.navigate(['/login']);
   }
 
   private loadAccounts(): void {
@@ -132,46 +143,46 @@ export class DashboardComponent implements OnInit {
   /**
    * Retourne l'icône correspondant au type de compte
    */
- getAccountIcon(type: string): string {
-  switch (type) {
-    case 'COURANT':
-      return '💳';
-    case 'EPARGNE':
-      return '🏦';
-    case 'LIVRET_A':
-      return '📘';
-    case 'LIVRET_JEUNE':
-      return '👦';
-    case 'PEL':
-      return '🏠';
-    case 'CEL':
-      return '🏡';
-    default:
-      return '💰';
+  getAccountIcon(type: string): string {
+    switch (type) {
+      case 'COURANT':
+        return '💳';
+      case 'EPARGNE':
+        return '🏦';
+      case 'LIVRET_A':
+        return '📘';
+      case 'LIVRET_JEUNE':
+        return '👦';
+      case 'PEL':
+        return '🏠';
+      case 'CEL':
+        return '🏡';
+      default:
+        return '💰';
+    }
   }
-}
 
   /**
    * Retourne le label lisible du type de compte
    */
   getAccountTypeLabel(type: string): string {
-  switch (type) {
-    case 'COURANT':
-      return 'Compte Courant';
-    case 'EPARGNE':
-      return 'Compte Épargne';
-    case 'LIVRET_A':
-      return 'Livret A';
-    case 'LIVRET_JEUNE':
-      return 'Livret Jeune';
-    case 'PEL':
-      return 'Plan Épargne Logement';
-    case 'CEL':
-      return 'Compte Épargne Logement';
-    default:
-      return 'Compte';
+    switch (type) {
+      case 'COURANT':
+        return 'Compte Courant';
+      case 'EPARGNE':
+        return 'Compte Épargne';
+      case 'LIVRET_A':
+        return 'Livret A';
+      case 'LIVRET_JEUNE':
+        return 'Livret Jeune';
+      case 'PEL':
+        return 'Plan Épargne Logement';
+      case 'CEL':
+        return 'Compte Épargne Logement';
+      default:
+        return 'Compte';
+    }
   }
-}
 
   /**
    * Formate une date au format français
