@@ -1,0 +1,137 @@
+.transaction-history-modal {
+  max-width: 900px;
+  max-height: 80vh;
+}
+
+.modal-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 10px 10px 0 0;
+  padding: 15px 20px;
+}
+
+.modal-header h3 {
+  margin: 0;
+  font-size: 1.3em;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.5em;
+  cursor: pointer;
+}
+
+.modal-body {
+  padding: 20px;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.loading-state {
+  text-align: center;
+  padding: 40px;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px;
+  color: #6c757d;
+}
+
+.transactions-summary {
+  background-color: #f8f9fa;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th {
+  background-color: #e9ecef;
+  padding: 12px;
+  text-align: left;
+  font-weight: 600;
+  border-bottom: 2px solid #dee2e6;
+}
+
+.table td {
+  padding: 12px;
+  border-bottom: 1px solid #dee2e6;
+  vertical-align: middle;
+}
+
+.transaction-icon {
+  font-size: 1.2em;
+  margin-right: 8px;
+}
+
+.badge {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.8em;
+  font-weight: 500;
+}
+
+.badge-debit {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.badge-credit {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.badge-virement_interne, .badge-virement_externe {
+  background-color: #d1ecf1;
+  color: #0c5460;
+}
+
+.category-badge {
+  background-color: #e2e3e5;
+  color: #383d41;
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-size: 0.8em;
+}
+
+.text-danger {
+  color: #dc3545 !important;
+  font-weight: bold;
+}
+
+.text-success {
+  color: #28a745 !important;
+  font-weight: bold;
+}
+
+.modal-footer {
+  padding: 15px 20px;
+  background-color: #f8f9fa;
+  border-radius: 0 0 10px 10px;
+  text-align: right;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .transaction-history-modal {
+    width: 95%;
+    margin: 10px;
+  }
+  
+  .table {
+    font-size: 0.9em;
+  }
+  
+  .table th,
+  .table td {
+    padding: 8px;
+  }
+}

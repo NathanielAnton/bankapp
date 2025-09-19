@@ -37,17 +37,17 @@
     </div>
   </div>
 
+   <!-- Actions Section -->
+  <div class="actions-section" *ngIf="accounts.length >= 0">
+    <button class="btn btn-success" (click)="openCreateModal()">
+      ➕ Créer un Nouveau Compte
+    </button>
+  </div>
+
   <!-- Loading State -->
   <div *ngIf="accounts.length === 0" class="loading">
     <div class="spinner"></div>
     <p>Chargement de vos comptes...</p>
-  </div>
-
-   <!-- Actions Section -->
-  <div class="actions-section" *ngIf="accounts.length > 0">
-    <button class="btn btn-success" (click)="openCreateModal()">
-      ➕ Créer un Nouveau Compte
-    </button>
   </div>
 
   <!-- Modal de création de compte -->
@@ -183,20 +183,34 @@
 
         <!-- Actions -->
         <div class="account-actions">
-          <button 
-            class="btn btn-primary"
-            (click)="handleAccountAction(account, 'transfer')"
-          >
-            Ajouter une transaction
-          </button>
-          <button 
-            class="btn btn-secondary"
-            (click)="handleAccountAction(account, 'history')"
-          >
-            Historique
-          </button>
-        </div>
+            <button 
+                class="btn btn-primary"
+                (click)="handleAccountAction(account, 'transfer')"
+            >
+                Ajouter une transaction
+            </button>
+            <button 
+                class="btn btn-secondary"
+                (click)="handleAccountAction(account, 'history')"
+            >
+                Historique
+            </button>
+        </div>  
       </div>
     </div>
   </div>
+
+    <app-transaction-form
+        [accounts]="accounts"
+        [selectedAccount]="selectedAccount"
+        [showModal]="showTransactionModal"
+        (modalClosed)="closeTransactionModal()"
+        (transactionCreated)="createTransaction($event)"
+    ></app-transaction-form>
+
+    <app-transaction-history
+        [accountId]="selectedAccountForHistory?.id"
+        [showModal]="showHistoryModal"
+        (modalClosed)="closeHistoryModal()"
+     ></app-transaction-history>
 </div>

@@ -1,0 +1,72 @@
+<div *ngIf="showModal" class="modal-overlay" (click)="closeModal()">
+  <div class="modal-content transaction-history-modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>📊 Historique des Transactions</h3>
+      <button class="close-btn" (click)="closeModal()">&times;</button>
+    </div>
+    
+    <div class="modal-body">
+      <div *ngIf="isLoading" class="loading-state">
+        <div class="spinner"></div>
+        <p>Chargement des transactions...</p>
+      </div>
+
+      <div *ngIf="!isLoading && errorMessage" class="error-message">
+        {{ errorMessage }}
+      </div>
+
+      <div *ngIf="!isLoading && transactions.length === 0" class="empty-state">
+        <p>📭 Aucune transaction trouvée</p>
+      </div>
+
+      <div *ngIf="!isLoading && transactions.length > 0" class="transactions-list">
+        <div class="transactions-summary">
+          <p><strong>{{ transactions.length }}</strong> transaction(s) trouvée(s)</p>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Montant</th>
+                <th>Type</th>
+                <th>Description</th>
+                <th>Date</th>
+                <th>Catégorie</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let transaction of transactions" 
+                  [class]="getTransactionClass(transaction.type)">
+                <td [class]="getTransactionClass(transaction.type)">
+                  {{ transactionService.formatAmount(transaction.montant, transaction.type) }}
+                </td>
+                <td>
+                    <span class="badge" [class]="'badge-' + transaction.type.toLowerCase()">
+                        {{ transaction.typeLibelle }}
+                    </span>
+                </td>
+                <td>{{ transaction.description || 'Sans description' }}</td>
+                <td>
+                  {{ formatDate(transaction.dateTransaction) }}
+                </td>
+                <td>
+                  <span *ngIf="transaction.categorieLibelle" class="category-badge">
+                    {{ transaction.categorieLibelle }}
+                  </span>
+                  <span *ngIf="!transaction.categorieLibelle" class="text-muted">-</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-secondary" (click)="closeModal()">
+        Fermer
+      </button>
+    </div>
+  </div>
+</div>

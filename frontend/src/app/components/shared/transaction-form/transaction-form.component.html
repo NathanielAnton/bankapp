@@ -1,0 +1,98 @@
+<div *ngIf="showModal" class="modal-overlay" (click)="closeModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Créer une Transaction</h3>
+      <button class="close-btn" (click)="closeModal()">&times;</button>
+    </div>
+    
+    <div class="modal-body">
+      <div *ngIf="selectedAccount" class="selected-account-info">
+        <strong>Compte source:</strong> 
+        {{ selectedAccount.type }} - 
+        Solde: {{ selectedAccount.solde }}€
+      </div>
+
+      <form (ngSubmit)="onSubmit()">
+        <div class="form-group">
+          <label for="transactionType">Type de transaction:</label>
+          <select 
+            id="transactionType" 
+            [(ngModel)]="transactionRequest.type" 
+            name="type"
+            class="form-control"
+            required
+          >
+            <option value="DEBIT">Débit</option>
+            <option value="CREDIT">Crédit</option>
+            <option value="VIREMENT_INTERNE">Virement Interne</option>
+            <option value="VIREMENT_EXTERNE">Virement Externe</option>
+          </select>
+        </div>
+
+        <div class="form-group" *ngIf="showDestinataireField()">
+          <label for="destinataireAccountId">Compte destinataire:</label>
+          <select 
+            id="destinataireAccountId" 
+            [(ngModel)]="transactionRequest.destinataireAccountId" 
+            name="destinataireAccountId"
+            class="form-control"
+          >
+            <option value="">Sélectionner un compte destinataire</option>
+            <option *ngFor="let account of getAvailableDestinataireAccounts()" [value]="account.id">
+              {{ account.type }} - Solde: {{ account.solde }}€
+            </option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="transactionAmount">Montant (€):</label>
+          <input 
+            type="number" 
+            id="transactionAmount" 
+            [(ngModel)]="transactionRequest.montant" 
+            name="montant"
+            class="form-control"
+            min="0.01"
+            step="0.01"
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="transactionDescription">Description:</label>
+          <textarea 
+            id="transactionDescription" 
+            [(ngModel)]="transactionRequest.description" 
+            name="description"
+            class="form-control"
+            rows="3"
+            placeholder="Description de la transaction..."
+          ></textarea>
+        </div>
+
+        <div *ngIf="errorMessage" class="error-message">
+          {{ errorMessage }}
+        </div>
+
+        <div class="modal-actions">
+          <button 
+            type="button" 
+            class="btn btn-secondary" 
+            (click)="closeModal()"
+            [disabled]="isLoading"
+          >
+            Annuler
+          </button>
+          <button 
+            type="submit" 
+            class="btn btn-primary"
+            [disabled]="isLoading"
+          >
+            <span *ngIf="isLoading">Création...</span>
+            <span *ngIf="!isLoading">Créer la Transaction</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

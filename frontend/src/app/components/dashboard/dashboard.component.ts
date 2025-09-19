@@ -1,9 +1,12 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms'; // ← Ajouter cette importation
+import { FormsModule } from '@angular/forms'; 
 import { AccountRequest, AccountService } from '../../services/account.service';
+import { TransactionService, TransactionRequest } from '../../services/transaction.service';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { TransactionFormComponent } from '../shared/transaction-form/transaction-form.component';
+import { TransactionHistoryComponent } from '../shared/transaction-history/transaction-history.component';
 
 interface Account {
   id: number;
@@ -17,7 +20,7 @@ interface Account {
 @Component({
   selector: 'app-dashboard',
   standalone: true, 
-  imports: [CommonModule, FormsModule], 
+  imports: [CommonModule, FormsModule, TransactionFormComponent, TransactionHistoryComponent], 
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
   encapsulation: ViewEncapsulation.None
@@ -55,10 +58,18 @@ export class DashboardComponent implements OnInit {
     { value: 'CLOTURE', label: 'Clôturé' }
   ];
 
+  // Variables pour les transactions 
+  showTransactionModal = false;
+  selectedAccount: Account | null = null;
+  // Variables pour l'historique
+  showHistoryModal = false;
+  selectedAccountForHistory: Account | null = null;
+
   constructor(
     private accountService: AccountService,
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private transactionService: TransactionService
   ) {}
 
   ngOnInit(): void {
@@ -140,6 +151,52 @@ export class DashboardComponent implements OnInit {
     });
   }
 
+  handleAccountAction(account: Account, action: string): void {
+    if (action === 'transfer') {
+      this.openTransactionModal(account);
+    } else if (action === 'history') {
+      this.openHistoryModal(account);
+    }
+  }
+
+  // Méthodes pour les transactions
+  openTransactionModal(account: Account): void {
+    this.selectedAccount = account;
+    this.showTransactionModal = true;
+  }
+
+  closeTransactionModal(): void {
+    this.showTransactionModal = false;
+    this.selectedAccount = null;
+  }
+
+  createTransaction(transactionRequest: TransactionRequest): void {
+    this.transactionService.createTransaction(transactionRequest).subscribe({
+      next: (response) => {
+        this.closeTransactionModal();
+        this.loadAccounts();
+      },
+      error: (error) => {
+        console.error('Erreur lors de la création de la transaction:', error);
+      }
+    });
+  }
+
+  // Méthodes pour l'historique
+  openHistoryModal(account: Account): void {
+    this.selectedAccountForHistory = account;
+    this.showHistoryModal = true;
+  }
+
+  closeHistoryModal(): void {
+    this.showHistoryModal = false;
+    this.selectedAccountForHistory = null;
+  }
+
+  viewTransactionHistory(account: Account): void {
+    this.router.navigate(['/transactions', account.id]);
+  }
+
   /**
    * Retourne l'icône correspondant au type de compte
    */
@@ -204,38 +261,6 @@ export class DashboardComponent implements OnInit {
       hour: '2-digit',
       minute: '2-digit'
     });
-  }
-
-  /**
-   * Gère les actions sur les comptes (virement, historique, etc.)
-   */
-  handleAccountAction(account: Account, action: 'transfer' | 'history'): void {
-    switch (action) {
-      case 'transfer':
-        this.handleTransfer(account);
-        break;
-      case 'history':
-        this.showHistory(account);
-        break;
-    }
-  }
-
-  /**
-   * Gère les virements/retraits
-   */
-  private handleTransfer(account: Account): void {
-    console.log(`Action de transfert sur le compte ${account.id}`);
-    // TODO: Implémenter la logique de virement/retrait
-    // Rediriger vers la page de virement ou ouvrir un modal
-  }
-
-  /**
-   * Affiche l'historique du compte
-   */
-  private showHistory(account: Account): void {
-    console.log(`Affichage de l'historique du compte ${account.id}`);
-    // TODO: Implémenter la logique d'affichage de l'historique
-    // Rediriger vers la page d'historique
   }
 
   /**
