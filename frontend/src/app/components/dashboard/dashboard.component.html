@@ -29,6 +29,94 @@
     <div class="spinner"></div>
     <p>Chargement de vos comptes...</p>
   </div>
+  
+   <!-- Actions Section -->
+  <div class="actions-section" *ngIf="accounts.length > 0">
+    <button class="btn btn-success" (click)="openCreateModal()">
+      ➕ Créer un Nouveau Compte
+    </button>
+  </div>
+
+  <!-- Modal de création de compte -->
+  <div *ngIf="showCreateModal" class="modal-overlay" (click)="closeCreateModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Créer un Nouveau Compte</h3>
+        <button class="close-btn" (click)="closeCreateModal()">&times;</button>
+      </div>
+      
+      <div class="modal-body">
+        <form (ngSubmit)="createAccount()">
+          <div class="form-group">
+            <label for="accountType">Type de Compte:</label>
+            <select 
+              id="accountType" 
+              [(ngModel)]="newAccount.type" 
+              name="type"
+              class="form-control"
+              required
+            >
+              <option *ngFor="let type of accountTypes" [value]="type.value">
+                {{ type.label }}
+              </option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="initialBalance">Solde Initial (€):</label>
+            <input 
+              type="number" 
+              id="initialBalance" 
+              [(ngModel)]="newAccount.solde" 
+              name="solde"
+              class="form-control"
+              min="0"
+              step="0.01"
+              required
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="accountStatus">Statut:</label>
+            <select 
+              id="accountStatus" 
+              [(ngModel)]="newAccount.statut" 
+              name="statut"
+              class="form-control"
+              required
+            >
+              <option *ngFor="let status of statusOptions" [value]="status.value">
+                {{ status.label }}
+              </option>
+            </select>
+          </div>
+
+          <div *ngIf="createError" class="error-message">
+            {{ createError }}
+          </div>
+
+          <div class="modal-actions">
+            <button 
+              type="button" 
+              class="btn btn-secondary" 
+              (click)="closeCreateModal()"
+              [disabled]="creatingAccount"
+            >
+              Annuler
+            </button>
+            <button 
+              type="submit" 
+              class="btn btn-primary"
+              [disabled]="creatingAccount"
+            >
+              <span *ngIf="creatingAccount">Création...</span>
+              <span *ngIf="!creatingAccount">Créer le Compte</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+   </div>
 
   <!-- Accounts Section -->
   <div class="accounts-section" *ngIf="accounts.length > 0">

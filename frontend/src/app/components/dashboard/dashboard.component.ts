@@ -1,20 +1,21 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AccountService } from '../../services/account.service';
+import { FormsModule } from '@angular/forms'; // ← Ajouter cette importation
+import { AccountRequest, AccountService } from '../../services/account.service';
 
 interface Account {
   id: number;
   clientId: number;
-  type: 'COURANT' | 'EPARGNE';
+  type: 'COURANT' | 'EPARGNE' | 'LIVRET_A' | 'LIVRET_JEUNE' | 'PEL' | 'CEL';
   solde: number;
-  statut: 'ACTIF' | 'INACTIF';
+  statut: 'ACTIF' | 'BLOQUE' | 'CLOTURE';
   dateOuverture: string;
 }
 
 @Component({
   selector: 'app-dashboard',
   standalone: true, 
-  imports: [CommonModule], 
+  imports: [CommonModule, FormsModule], 
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
   encapsulation: ViewEncapsulation.None
@@ -24,6 +25,33 @@ export class DashboardComponent implements OnInit {
   loading = true;
   error: string | null = null;
   username: string | null | undefined;
+
+    // Propriétés pour le modal
+  showCreateModal = false;
+  newAccount: AccountRequest = {
+    clientId: 0,
+    type: 'COURANT',
+    solde: 0,
+    statut: 'ACTIF'
+  };
+  creatingAccount = false;
+  createError: string | null = null;
+
+  // Options pour les selects
+  accountTypes = [
+    { value: 'COURANT', label: 'Compte Courant' },
+    { value: 'EPARGNE', label: 'Compte Épargne' },
+    { value: 'LIVRET_A', label: 'Livret A' },
+    { value: 'LIVRET_JEUNE', label: 'Livret Jeune' },
+    { value: 'PEL', label: 'Plan Épargne Logement' },
+    { value: 'CEL', label: 'Compte Épargne Logement' }
+  ];
+
+  statusOptions = [
+    { value: 'ACTIF', label: 'Actif' },
+    { value: 'BLOQUE', label: 'Bloqué' },
+    { value: 'CLOTURE', label: 'Clôturé' }
+  ];
 
   constructor(private accountService: AccountService) {}
 
@@ -54,33 +82,96 @@ export class DashboardComponent implements OnInit {
     return this.accounts.reduce((total, account) => total + account.solde, 0);
   }
 
+  openCreateModal(): void {
+    this.showCreateModal = true;
+    this.createError = null;
+    
+    const clientId = localStorage.getItem('clientID');
+    if (clientId) {
+      this.newAccount.clientId = parseInt(clientId, 10);
+    } else {
+      console.error('Client ID non trouvé dans le localStorage');
+      this.createError = 'Erreur: ID client non disponible';
+    }
+  }
+
+  closeCreateModal(): void {
+    this.showCreateModal = false;
+    this.newAccount = {
+      clientId: 0,
+      type: 'COURANT',
+      solde: 0,
+      statut: 'ACTIF'
+    };
+    this.createError = null;
+  }
+
+  createAccount(): void {
+    if (!this.newAccount.type || this.newAccount.solde < 0 || !this.newAccount.clientId) {
+      this.createError = 'Veuillez remplir tous les champs correctement';
+      return;
+    }
+
+    this.creatingAccount = true;
+    this.createError = null;
+
+    this.accountService.createAccount(this.newAccount).subscribe({
+      next: (response) => {
+        this.creatingAccount = false;
+        this.closeCreateModal();
+        this.loadAccounts();
+      },
+      error: (err) => {
+        console.error('Erreur lors de la création du compte', err);
+        this.createError = err.error?.message || 'Erreur lors de la création du compte';
+        this.creatingAccount = false;
+      }
+    });
+  }
+
   /**
    * Retourne l'icône correspondant au type de compte
    */
-  getAccountIcon(type: string): string {
-    switch (type) {
-      case 'COURANT':
-        return '💳';
-      case 'EPARGNE':
-        return '🏦';
-      default:
-        return '💰';
-    }
+ getAccountIcon(type: string): string {
+  switch (type) {
+    case 'COURANT':
+      return '💳';
+    case 'EPARGNE':
+      return '🏦';
+    case 'LIVRET_A':
+      return '📘';
+    case 'LIVRET_JEUNE':
+      return '👦';
+    case 'PEL':
+      return '🏠';
+    case 'CEL':
+      return '🏡';
+    default:
+      return '💰';
   }
+}
 
   /**
    * Retourne le label lisible du type de compte
    */
   getAccountTypeLabel(type: string): string {
-    switch (type) {
-      case 'COURANT':
-        return 'Compte Courant';
-      case 'EPARGNE':
-        return 'Compte Épargne';
-      default:
-        return 'Compte';
-    }
+  switch (type) {
+    case 'COURANT':
+      return 'Compte Courant';
+    case 'EPARGNE':
+      return 'Compte Épargne';
+    case 'LIVRET_A':
+      return 'Livret A';
+    case 'LIVRET_JEUNE':
+      return 'Livret Jeune';
+    case 'PEL':
+      return 'Plan Épargne Logement';
+    case 'CEL':
+      return 'Compte Épargne Logement';
+    default:
+      return 'Compte';
   }
+}
 
   /**
    * Formate une date au format français
