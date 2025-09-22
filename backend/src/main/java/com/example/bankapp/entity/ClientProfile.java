@@ -18,25 +18,25 @@ public class ClientProfile {
 
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false)
-    @JsonManagedReference // ← Côté parent de la relation avec User
+    @JsonManagedReference 
     private User user;
     
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
     private List<Account> accounts = new ArrayList<>();
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String nom;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String prenom;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT",nullable = true)
     private String adresse;
 
     private String telephone;
 
-    @Column(name = "date_naissance")
+    @Column(name = "date_naissance",nullable = true)
     private LocalDate dateNaissance;
 
     // Constructors

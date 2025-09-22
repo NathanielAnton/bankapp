@@ -7,6 +7,8 @@ import com.example.bankapp.repository.ClientProfileRepository;
 import com.example.bankapp.repository.UserRepository;
 import com.example.bankapp.security.JwtUtil;
 
+import jakarta.transaction.Transactional;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -46,7 +48,7 @@ public class AuthService {
     public User register(RegisterRequest request) {
         User user = new User(
                 request.getUsername(),
-                request.getUsername() + "@example.com",
+                request.getEmail(),
                 passwordEncoder.encode(request.getPassword()),
                 "USER"
         );
@@ -55,8 +57,8 @@ public class AuthService {
 
         ClientProfile profile = new ClientProfile(
                 user,
-                request.getNom(),
-                request.getPrenom(),
+                null,
+                null,
                 null,
                 null,
                 null

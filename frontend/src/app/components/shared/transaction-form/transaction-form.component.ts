@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TransactionRequest } from '../../../services/transaction.service';
@@ -11,7 +11,7 @@ import { Account } from '../../../services/account.service';
   standalone: true, 
   imports: [CommonModule, FormsModule] 
 })
-export class TransactionFormComponent implements OnInit {
+export class TransactionFormComponent implements OnInit, OnChanges { 
   @Input() accounts: Account[] = [];
   @Input() selectedAccount: Account | null = null;
   @Input() showModal = false;
@@ -30,8 +30,27 @@ export class TransactionFormComponent implements OnInit {
   isLoading = false;
 
   ngOnInit(): void {
+    this.updateAccountId();
+  }
+
+  // Ajoutez cette méthode pour détecter les changements d'input
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['selectedAccount'] && this.selectedAccount) {
+      this.updateAccountId();
+    }
+    
+    if (changes['showModal'] && this.showModal) {
+      this.resetForm();
+    }
+  }
+
+  // Méthode pour mettre à jour l'accountId
+  private updateAccountId(): void {
     if (this.selectedAccount) {
       this.transactionRequest.accountId = this.selectedAccount.id;
+    } else if (this.accounts.length > 0) {
+      // Fallback: prendre le premier compte si aucun sélectionné
+      this.transactionRequest.accountId = this.accounts[0].id;
     }
   }
 
@@ -41,16 +60,26 @@ export class TransactionFormComponent implements OnInit {
   }
 
   onSubmit(): void {
+    // Validation supplémentaire
+    if (this.transactionRequest.accountId === 0) {
+      this.errorMessage = 'Veuillez sélectionner un compte';
+      return;
+    }
+    
+    if (this.transactionRequest.montant <= 0) {
+      this.errorMessage = 'Le montant doit être supérieur à 0';
+      return;
+    }
+
     this.isLoading = true;
     this.errorMessage = '';
     
-    // Émettre l'événement avec la transaction
-    this.transactionCreated.emit(this.transactionRequest);
+    this.transactionCreated.emit({...this.transactionRequest});
   }
 
   resetForm(): void {
     this.transactionRequest = {
-      accountId: this.selectedAccount?.id || 0,
+      accountId: this.selectedAccount?.id || (this.accounts.length > 0 ? this.accounts[0].id : 0),
       type: 'DEBIT',
       montant: 0,
       description: ''
