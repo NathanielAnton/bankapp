@@ -1,21 +1,16 @@
 <div class="container">
+
+  <app-navbar></app-navbar>
+  
   <!-- Header -->
     <div class="header">
-    <h1>🏦 Tableau de Bord</h1>
-    <div class="header-content">
-        <p class="welcome-text">
-            Bienvenue dans votre espace bancaire personnel, 
-            <strong style="text-transform: uppercase;">{{ username }}</strong>
-        </p>
-        <button 
-            class="btn-disconnect"
-            (click)="disconnect()"
-            title="Se déconnecter"
-        >
-            <i class="bi bi-power"></i>
-            Déconnexion
-        </button>
-        </div>
+      <h1>🏦 Tableau de Bord</h1>
+      <div class="header-content">
+          <p class="welcome-text">
+              Bienvenue dans votre espace bancaire personnel, 
+              <strong style="text-transform: uppercase;">{{ username }}</strong>
+          </p>
+      </div>
     </div>
 
   <!-- Summary Cards -->
@@ -150,7 +145,7 @@
             <div class="account-icon">{{ getAccountIcon(account.type) }}</div>
             <div class="account-info">
               <h3>{{ getAccountTypeLabel(account.type) }}</h3>
-              <!-- <div class="account-number">ID: {{ account.id }}</div> -->
+              <div class="account-number">ID: {{ account.id }}</div>
             </div>
           </div>
           <div 

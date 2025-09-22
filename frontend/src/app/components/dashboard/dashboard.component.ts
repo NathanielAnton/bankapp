@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { TransactionFormComponent } from '../shared/transaction-form/transaction-form.component';
 import { TransactionHistoryComponent } from '../shared/transaction-history/transaction-history.component';
+import { NavbarComponent } from '../navbar/navbar.component';
 
 interface Account {
   id: number;
@@ -20,7 +21,7 @@ interface Account {
 @Component({
   selector: 'app-dashboard',
   standalone: true, 
-  imports: [CommonModule, FormsModule, TransactionFormComponent, TransactionHistoryComponent], 
+  imports: [CommonModule, FormsModule, TransactionFormComponent, TransactionHistoryComponent, NavbarComponent], 
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
   encapsulation: ViewEncapsulation.None
