@@ -1,27 +1,63 @@
-# Frontend
+# 💳 BankApp
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.
+BankApp est une application bancaire **full-stack** permettant aux utilisateurs de gérer leurs comptes, transactions et catégories de dépenses/revenus.  
+Le projet inclut un **backend Spring Boot** sécurisé avec JWT et un **frontend Angular**.
 
-## Development server
+---
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+## 🚀 Fonctionnalités principales
 
-## Code scaffolding
+- 🔐 **Authentification JWT** (login / inscription / gestion de session)  
+- 👤 **Gestion des profils clients** (informations personnelles liées à un utilisateur)  
+- 💳 **Comptes bancaires**
+  - Consultation des comptes de l’utilisateur connecté  
+  - Statut des comptes (Actif, Bloqué, Clôturé)  
+- 💸 **Transactions**
+  - Historique des transactions d’un compte  
+  - Association des transactions à une catégorie  
+- 🏷️ **Catégorisation**
+  - Catégories de dépense/revenu (ex : Logement, Alimentation, Salaire, etc.)  
+  - Possibilité de catégoriser une transaction manuellement  
+- 📊 **Suivi budgétaire** basé sur les catégories et l’historique  
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+---
 
-## Build
+## 🛠️ Stack technique
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+### Backend
+- ☕ **Java 17+**
+- ⚡ **Spring Boot 3+**
+- 🔒 **Spring Security + JWT**
+- 🗄️ **Spring Data JPA / Hibernate**
+- 🐬 **PostgreSQL**
 
-## Running unit tests
+### Frontend
+- 🅰️ **Angular 17+**
+- 🎨 **Bootstrap**
+- 📡 **RxJS / HttpClient**
+- ✍️ **FormsModule / NgModel**
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+---
 
-## Running end-to-end tests
+## 📌 Exemple d’appel API
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+### Récupérer les comptes de l’utilisateur connecté
+``` GET /api/accounts/me ```
 
-## Further help
+```Authorization: Bearer <jwt_token> ```
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+### Mettre à jour la catégorie d’une transaction
+``` PATCH /api/transactions/{transactionId}/categorie ``` 
+
+``` Content-Type: application/json | Authorization: Bearer <jwt_token>``` 
+
+```
+{
+  "categorieId": 3
+}
+```
+
+## 👨‍💻 Auteur
+
+### Projet réalisé par Nathaniel Anton Hillary
+🎓 Master Développement Full Stack — EFREI Paris
