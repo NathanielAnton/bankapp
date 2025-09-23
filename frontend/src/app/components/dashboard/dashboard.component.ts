@@ -291,24 +291,5 @@ export class DashboardComponent implements OnInit {
   getActiveAccountsCount(): number {
     return this.accounts.filter(account => this.isAccountActive(account)).length;
   }
-
-  /**
-   * Retourne le compte avec le solde le plus élevé
-   */
-  getHighestBalanceAccount(): Account | null {
-    if (this.accounts.length === 0) return null;
-    return this.accounts.reduce((prev, current) => 
-      (prev.solde > current.solde) ? prev : current
-    );
-  }
-
-  /**
-   * Formate un montant en euros
-   */
-  formatCurrency(amount: number): string {
-    return new Intl.NumberFormat('fr-FR', {
-      style: 'currency',
-      currency: 'EUR'
-    }).format(amount);
-  }
+  
 }

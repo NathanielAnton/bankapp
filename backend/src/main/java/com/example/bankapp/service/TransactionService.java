@@ -141,4 +141,41 @@ public class TransactionService {
         
         return response;
     }
+    
+    @Transactional
+    public TransactionResponse updateTransactionCategory(Long transactionId, Long categorieId) {
+        // Récupérer la transaction
+        Transaction transaction = transactionRepository.findById(transactionId)
+                .orElseThrow(() -> new RuntimeException("Transaction non trouvée"));
+
+        // Récupérer la catégorie (si categorieId est null, on supprime la catégorie)
+        Category categorie = null;
+        if (categorieId != null) {
+            categorie = categoryRepository.findById(categorieId)
+                    .orElseThrow(() -> new RuntimeException("Catégorie non trouvée"));
+        }
+
+        // Mettre à jour la catégorie
+        transaction.setCategorie(categorie);
+        
+        Transaction updatedTransaction = transactionRepository.save(transaction);
+        
+        return mapToResponse(updatedTransaction);
+    }
+
+    // Méthode pour obtenir toutes les catégories disponibles
+    public List<Category> getAllCategories() {
+        return categoryRepository.findAll();
+    }
+
+    // Méthode pour obtenir les transactions par catégorie
+    public List<TransactionResponse> getTransactionsByCategory(Long categorieId) {
+        Category categorie = categoryRepository.findById(categorieId)
+                .orElseThrow(() -> new RuntimeException("Catégorie non trouvée"));
+        
+        return transactionRepository.findByCategorie(categorie)
+                .stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
+    }
 }

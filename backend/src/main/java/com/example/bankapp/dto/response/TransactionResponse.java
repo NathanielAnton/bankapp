@@ -13,6 +13,7 @@ public class TransactionResponse {
     private LocalDateTime dateTransaction;
     private String description;
     private String categorieLibelle;
+    private Long categorieId;
 
     // Getters et Setters
     public Long getId() { return id; }
@@ -41,4 +42,7 @@ public class TransactionResponse {
     
     public String getCategorieLibelle() { return categorieLibelle; }
     public void setCategorieLibelle(String categorieLibelle) { this.categorieLibelle = categorieLibelle; }
+    
+    public Long getCategorieId() { return categorieId; }
+    public void setCategorieId(Long categorieId) { this.categorieId = categorieId; }
 }

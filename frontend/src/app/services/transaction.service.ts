@@ -21,6 +21,7 @@ export interface TransactionResponse {
   dateTransaction: string;
   description: string;
   categorieLibelle?: string;
+  categorieId?: number;
 }
 
 export interface Category {
@@ -29,12 +30,15 @@ export interface Category {
   description?: string;
 }
 
+export interface UpdateTransactionCategoryRequest {
+  categorieId: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class TransactionService {
   private apiUrl = 'http://localhost:8080/api/transactions';
-  private categoriesUrl = 'http://localhost:8080/api/categories';
 
   constructor(private http: HttpClient) {}
 
@@ -74,10 +78,23 @@ export class TransactionService {
     return this.http.get<TransactionResponse>(`${this.apiUrl}/${id}`, { headers });
   }
 
-  // Récupérer toutes les catégories
-  getCategories(): Observable<Category[]> {
+  // Mettre à jour la catégorie d'une transaction
+  updateTransactionCategory(transactionId: number, categorieId: number): Observable<TransactionResponse> {
     const headers = this.getAuthHeaders();
-    return this.http.get<Category[]>(this.categoriesUrl, { headers });
+    const request: UpdateTransactionCategoryRequest = { categorieId };
+    return this.http.patch<TransactionResponse>(`${this.apiUrl}/${transactionId}/categorie`, request, { headers });
+  }
+
+  // Récupérer les transactions par catégorie
+  getTransactionsByCategory(categorieId: number): Observable<TransactionResponse[]> {
+    const headers = this.getAuthHeaders();
+    return this.http.get<TransactionResponse[]>(`${this.apiUrl}/categorie/${categorieId}`, { headers });
+  }
+
+  // Récupérer toutes les catégories 
+  getAllCategories(): Observable<Category[]> {
+    const headers = this.getAuthHeaders();
+    return this.http.get<Category[]>(`${this.apiUrl}/categories`, { headers });
   }
 
   // Méthodes utilitaires pour les descriptions

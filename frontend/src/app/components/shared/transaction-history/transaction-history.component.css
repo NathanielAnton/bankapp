@@ -119,6 +119,92 @@
   text-align: right;
 }
 
+/* Bouton "À catégoriser" amélioré */
+.btn-categorize {
+  background: linear-gradient(135deg, #ff9a56 0%, #ff7730 100%);
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.75em;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(255, 119, 48, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-categorize:hover {
+  background: linear-gradient(135deg, #ff7730 0%, #e85a2b 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(255, 119, 48, 0.3);
+}
+
+.btn-categorize:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(255, 119, 48, 0.2);
+}
+
+.btn-categorize:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(255, 119, 48, 0.3);
+}
+
+/* Animation de pulsation pour attirer l'attention */
+.btn-categorize::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, transparent 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.btn-categorize:hover::before {
+  opacity: 1;
+}
+
+/* Icône optionnelle */
+.btn-categorize .icon {
+  margin-right: 4px;
+  font-size: 0.9em;
+}
+
+/* Version avec animation de pulsation permanente pour les éléments non catégorisés */
+.btn-categorize.urgent {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 2px 4px rgba(255, 119, 48, 0.2);
+  }
+  50% {
+    box-shadow: 0 4px 8px rgba(255, 119, 48, 0.4);
+  }
+  100% {
+    box-shadow: 0 2px 4px rgba(255, 119, 48, 0.2);
+  }
+}
+
+/* Version alternative avec bordure colorée */
+.btn-categorize.outlined {
+  background: white;
+  color: #ff7730;
+  border: 2px solid #ff7730;
+  box-shadow: none;
+}
+
+.btn-categorize.outlined:hover {
+  background: #ff7730;
+  color: white;
+  border-color: #ff7730;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .transaction-history-modal {
@@ -133,5 +219,11 @@
   .table th,
   .table td {
     padding: 8px;
+  }
+
+  .btn-categorize {
+    padding: 4px 8px;
+    font-size: 0.7em;
+    border-radius: 16px;
   }
 }

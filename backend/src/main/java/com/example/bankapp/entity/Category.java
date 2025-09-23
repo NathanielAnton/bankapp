@@ -1,5 +1,9 @@
 package com.example.bankapp.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.*;
@@ -17,13 +21,14 @@ public class Category {
 
     @Column(length = 500)
     private String description;
+    
+    @OneToMany(mappedBy = "categorie", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<Transaction> transactions = new ArrayList<>();
 
     // Constructors
     public Category() {}
 
-    public Category(String libelle) {
-        this.libelle = libelle;
-    }
 
     public Category(String libelle, String description) {
         this.libelle = libelle;
@@ -55,8 +60,11 @@ public class Category {
         this.description = description;
     }
 
-    @Override
-    public String toString() {
-        return libelle;
+    public List<Transaction> getTransactions() {
+        return transactions;
+    }
+
+    public void setTransactions(List<Transaction> transactions) {
+        this.transactions = transactions;
     }
 }

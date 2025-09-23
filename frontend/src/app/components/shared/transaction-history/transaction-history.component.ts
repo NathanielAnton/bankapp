@@ -1,14 +1,15 @@
 import { Component, EventEmitter, Input, OnInit, Output, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TransactionService, TransactionResponse } from '../../../services/transaction.service';
+import { TransactionService, TransactionResponse, Category } from '../../../services/transaction.service';
 import { AccountService } from '../../../services/account.service';
+import { FormsModule } from '@angular/forms'; 
 
 @Component({
   selector: 'app-transaction-history',
   templateUrl: './transaction-history.component.html',
   styleUrls: ['./transaction-history.component.css'],
   standalone: true,
-  imports: [CommonModule]
+  imports: [CommonModule, FormsModule]
 })
 export class TransactionHistoryComponent implements OnInit, OnChanges { 
   @Input() accountId: number | undefined = undefined;
@@ -16,6 +17,10 @@ export class TransactionHistoryComponent implements OnInit, OnChanges {
   @Input() showModal = false;
   
   transactions: TransactionResponse[] = [];
+  categories: Category[] = [];
+  showCategorizeModal = false;
+  selectedTransaction: TransactionResponse | null = null;
+  selectedCategorieId: number | null = null;
   isLoading = false;
   errorMessage = '';
 
@@ -25,10 +30,84 @@ export class TransactionHistoryComponent implements OnInit, OnChanges {
   ) {}
 
   ngOnInit(): void {
+    this.loadCategories();
     // Charger les transactions si le modal est déjà ouvert à l'initialisation
     if (this.showModal && (this.accountId || this.clientId)) {
       this.loadTransactions();
     }
+  }
+
+  private loadCategories(): void {
+    this.transactionService.getAllCategories().subscribe({
+      next: (cats) => {
+        this.categories = cats;
+      },
+      error: (err) => {
+        console.error('Erreur lors du chargement des catégories:', err);
+      }
+    });
+  }
+
+
+  openCategorizeModal(transaction: TransactionResponse): void {
+    this.selectedTransaction = transaction;
+    this.selectedCategorieId = transaction.categorieId || null;
+    this.showCategorizeModal = true;
+
+    if (this.categories.length === 0) {
+      this.transactionService.getAllCategories().subscribe({
+        next: cats => this.categories = cats,
+        error: err => console.error('Erreur chargement catégories', err)
+      });
+    }
+  }
+
+  closeCategorizeModal(): void {
+    this.showCategorizeModal = false;
+    this.selectedTransaction = null;
+    this.selectedCategorieId = null;
+  }
+
+  saveCategory(): void {
+    if (!this.selectedTransaction || this.selectedCategorieId == null) return;
+
+    this.transactionService
+      .updateTransactionCategory(this.selectedTransaction.id, this.selectedCategorieId)
+      .subscribe({
+        next: (updatedTx) => {
+          // mettre à jour la liste locale
+          const index = this.transactions.findIndex(tx => tx.id === updatedTx.id);
+          if (index !== -1) {
+            this.transactions[index] = updatedTx;
+          }
+          this.closeCategorizeModal();
+        },
+        error: (err) => {
+          console.error('Erreur maj catégorie', err);
+        }
+      });
+  }
+
+  getSelectValue(event: Event): string {
+    return (event.target as HTMLSelectElement).value;
+  }
+
+  onCategoryChange(transactionId: number, newCategoryId: string): void {
+    const parsedId = parseInt(newCategoryId, 10);
+    if (!parsedId) return;
+
+    this.transactionService.updateTransactionCategory(transactionId, parsedId).subscribe({
+      next: (updatedTransaction) => {
+        const index = this.transactions.findIndex(t => t.id === transactionId);
+        if (index !== -1) {
+          this.transactions[index].categorieId = updatedTransaction.categorieId;
+          this.transactions[index].categorieLibelle = updatedTransaction.categorieLibelle;
+        }
+      },
+      error: (err) => {
+        console.error('Erreur lors de la mise à jour de la catégorie:', err);
+      }
+    });
   }
 
   // Ajoutez cette méthode pour détecter les changements d'input

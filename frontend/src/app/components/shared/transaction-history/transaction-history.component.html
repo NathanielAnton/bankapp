@@ -51,14 +51,58 @@
                   {{ formatDate(transaction.dateTransaction) }}
                 </td>
                 <td>
-                  <span *ngIf="transaction.categorieLibelle" class="category-badge">
-                    {{ transaction.categorieLibelle }}
-                  </span>
-                  <span *ngIf="!transaction.categorieLibelle" class="text-muted">-</span>
+                  <ng-container *ngIf="transaction.categorieLibelle; else aCategoriser">
+                    <span class="category-badge">
+                      {{ transaction.categorieLibelle }}
+                    </span>
+                  </ng-container>
+
+                  <ng-template #aCategoriser>
+                    <!-- Version basique améliorée -->
+                    <button class="btn-categorize"
+                            (click)="openCategorizeModal(transaction)">
+                      <span class="icon">📝</span>
+                      À catégoriser
+                    </button>
+                  </ng-template>
                 </td>
               </tr>
             </tbody>
           </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal de catégorisation -->
+    <div *ngIf="showCategorizeModal" class="modal-overlay" (click)="closeCategorizeModal()">
+      <div class="modal-content categorize-modal" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h3>📂 Catégoriser la transaction</h3>
+          <button class="close-btn" (click)="closeCategorizeModal()">&times;</button>
+        </div>
+
+        <div class="modal-body">
+          <p><strong>Transaction :</strong> {{ selectedTransaction?.description || 'Sans description' }}</p>
+          <p><strong>Montant :</strong> {{ selectedTransaction?.montant }} €</p>
+
+          <div class="form-group">
+            <label for="categorieSelect">Catégorie :</label>
+            <select id="categorieSelect"
+                    [(ngModel)]="selectedCategorieId"
+                    class="form-control">
+              <option [ngValue]="null" disabled>-- Sélectionner une catégorie --</option>
+              <option *ngFor="let cat of categories" [ngValue]="cat.id">
+                {{ cat.libelle }}
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn btn-secondary" (click)="closeCategorizeModal()">Annuler</button>
+          <button class="btn btn-primary" [disabled]="!selectedCategorieId" (click)="saveCategory()">
+            Valider
+          </button>
         </div>
       </div>
     </div>
