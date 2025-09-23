@@ -92,7 +92,7 @@
               class="form-control"
               required
             >
-              <option *ngFor="let status of statusOptions" [value]="status.value">
+              <option *ngFor="let status of statusOptions" [value]="status.value" [disabled]="status.value === 'BLOQUE' || status.value === 'CLOTURE'">
                 {{ status.label }}
               </option>
             </select>
