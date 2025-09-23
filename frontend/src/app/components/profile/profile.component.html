@@ -1,0 +1,160 @@
+<app-navbar></app-navbar>
+
+<!-- profile.component.html -->
+<div class="profile-container">
+  <div class="profile-header">
+    <h1>👤 Mon Profil</h1>
+    <p>Gérez vos informations personnelles</p>
+  </div>
+
+  <!-- Message de notification -->
+  <div *ngIf="message" class="alert alert-{{messageType}}">
+    {{message}}
+  </div>
+
+  <!-- Loading state -->
+  <div *ngIf="isLoading" class="loading">
+    <div class="spinner"></div>
+    <p>Chargement...</p>
+  </div>
+
+  <!-- Mode visualisation -->
+  <div *ngIf="!isEditing && !isLoading" class="profile-view">
+    <div class="profile-card">
+      <div class="profile-avatar">
+        <i class="bi bi-person-circle"></i>
+      </div>
+      
+      <div class="profile-info">
+        <div class="info-group">
+          <label>Nom complet</label>
+          <p class="info-value">{{profile.prenom}} {{profile.nom}}</p>
+        </div>
+
+        <div class="info-group">
+          <label>Adresse</label>
+          <p class="info-value">{{profile.adresse || 'Non renseignée'}}</p>
+        </div>
+
+        <div class="info-group">
+          <label>Téléphone</label>
+          <p class="info-value">{{profile.telephone || 'Non renseigné'}}</p>
+        </div>
+
+        <div class="info-group">
+          <label>Date de naissance</label>
+          <p class="info-value">
+            {{profile.dateNaissance ? (profile.dateNaissance | date: 'dd/MM/yyyy') : 'Non renseignée'}}
+            <span *ngIf="getAge() !== null" class="age-badge">
+              ({{getAge()}} ans)
+            </span>
+          </p>
+        </div>
+
+        <div class="info-group">
+          <label>Statut</label>
+          <p class="info-value">
+            <span class="status-badge" [class.adult]="isAdult()" [class.minor]="!isAdult()">
+              {{isAdult() ? 'Adulte' : 'Mineur'}}
+            </span>
+          </p>
+        </div>
+      </div>
+
+      <div class="profile-actions">
+        <button class="btn-edit" (click)="toggleEdit()">
+          <i class="bi bi-pencil"></i>
+          Modifier le profil
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mode édition -->
+  <div *ngIf="isEditing && !isLoading" class="profile-edit">
+    <div class="edit-card">
+      <h2>Modifier le profil</h2>
+      
+      <form (ngSubmit)="saveProfile()" #profileForm="ngForm">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="prenom">Prénom *</label>
+            <input
+              type="text"
+              id="prenom"
+              name="prenom"
+              [(ngModel)]="profile.prenom"
+              required
+              class="form-control"
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="nom">Nom *</label>
+            <input
+              type="text"
+              id="nom"
+              name="nom"
+              [(ngModel)]="profile.nom"
+              required
+              class="form-control"
+            >
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="adresse">Adresse</label>
+          <textarea
+            id="adresse"
+            name="adresse"
+            [(ngModel)]="profile.adresse"
+            rows="3"
+            class="form-control"
+            placeholder="Votre adresse complète"
+          ></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="telephone">Téléphone</label>
+          <input
+            type="tel"
+            id="telephone"
+            name="telephone"
+            [(ngModel)]="profile.telephone"
+            class="form-control"
+            placeholder="+33 1 23 45 67 89"
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="dateNaissance">Date de naissance *</label>
+          <input
+            type="date"
+            id="dateNaissance"
+            name="dateNaissance"
+            [(ngModel)]="profile.dateNaissance"
+            required
+            class="form-control"
+          >
+          <small *ngIf="!isAdult() && profile.dateNaissance" class="warning-text">
+            ⚠️ Vous êtes mineur, certaines fonctionnalités peuvent être limitées.
+          </small>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn-cancel" (click)="cancelEdit()">
+            Annuler
+          </button>
+          <button 
+            type="submit" 
+            class="btn-save"
+            [disabled]="!profileForm.form.valid"
+          >
+            <i class="bi bi-check"></i>
+            Sauvegarder
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

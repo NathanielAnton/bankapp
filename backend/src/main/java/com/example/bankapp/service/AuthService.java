@@ -7,8 +7,6 @@ import com.example.bankapp.repository.ClientProfileRepository;
 import com.example.bankapp.repository.UserRepository;
 import com.example.bankapp.security.JwtUtil;
 
-import jakarta.transaction.Transactional;
-
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 

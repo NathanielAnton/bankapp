@@ -6,7 +6,6 @@ import com.example.bankapp.dto.request.AccountRequest;
 import com.example.bankapp.dto.response.AccountResponse;
 import com.example.bankapp.entity.Account;
 import com.example.bankapp.entity.ClientProfile;
-import com.example.bankapp.entity.User;
 import com.example.bankapp.repository.AccountRepository;
 import com.example.bankapp.repository.ClientProfileRepository;
 import com.example.bankapp.repository.UserRepository;
