@@ -102,9 +102,10 @@ export class DashboardComponent implements OnInit {
    * Calcule le solde total de tous les comptes
    */
   getTotalBalance(): number {
-    return this.accounts.reduce((total, account) => total + account.solde, 0);
+    const total = this.accounts.reduce((total, account) => total + account.solde, 0);
+    return parseFloat(total.toFixed(2));
   }
-
+  
   openCreateModal(): void {
     this.showCreateModal = true;
     this.createError = null;

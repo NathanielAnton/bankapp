@@ -63,4 +63,13 @@ public class TransactionController {
     public ResponseEntity<List<Category>> getAllCategories() {
         return ResponseEntity.ok(transactionService.getAllCategories());
     }
+    
+    @GetMapping("/user/current")
+    public ResponseEntity<List<TransactionResponse>> getMyTransactions(@RequestHeader("Authorization") String authHeader) {
+        // Extraire le token après "Bearer "
+        String token = authHeader.substring(7);
+        return ResponseEntity.ok(transactionService.getMyTransactions(token));
+    }
+
+
 }

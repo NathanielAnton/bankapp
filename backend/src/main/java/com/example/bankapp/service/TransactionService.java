@@ -6,10 +6,13 @@ import com.example.bankapp.dto.response.TransactionResponse;
 import com.example.bankapp.entity.*;
 import com.example.bankapp.repository.AccountRepository;
 import com.example.bankapp.repository.CategoryRepository;
+import com.example.bankapp.repository.ClientProfileRepository;
 import com.example.bankapp.repository.TransactionRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.example.bankapp.security.JwtUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,13 +22,20 @@ public class TransactionService {
     private final TransactionRepository transactionRepository;
     private final AccountRepository accountRepository;
     private final CategoryRepository categoryRepository;
+    private final ClientProfileRepository clientRepository;
+    private final JwtUtil jwtUtil;
+
 
     public TransactionService(TransactionRepository transactionRepository,
                              AccountRepository accountRepository,
-                             CategoryRepository categoryRepository) {
+                             CategoryRepository categoryRepository,
+                             ClientProfileRepository clientRepository,
+                             JwtUtil jwtUtil) {
         this.transactionRepository = transactionRepository;
         this.accountRepository = accountRepository;
         this.categoryRepository = categoryRepository;
+        this.clientRepository = clientRepository;
+        this.jwtUtil = jwtUtil;
     }
 
     @Transactional
@@ -178,4 +188,37 @@ public class TransactionService {
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
     }
+    
+    public List<TransactionResponse> getMyTransactions(String token) {
+        if (!jwtUtil.isTokenValid(token)) {
+            throw new RuntimeException("Token invalide ou expiré");
+        }
+
+        Long userId = jwtUtil.extractId(token);
+
+        // Trouver le client associé à cet utilisateur
+        ClientProfile client = clientRepository.findByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("Client not found for user"));
+
+        // 🔹 Récupérer toutes les transactions de ses comptes
+        List<Transaction> transactionsEnvoyees = transactionRepository.findByAccountClientId(client.getId());
+
+        // 🔹 Récupérer aussi les transactions où il est destinataire
+        List<Account> comptes = accountRepository.findByClientId(client.getId());
+        List<Transaction> transactionsRecues = comptes.stream()
+                .flatMap(account -> transactionRepository.findByDestinataireAccountId(account.getId()).stream())
+                .toList();
+
+        // 🔹 Fusionner envoyées + reçues
+        List<Transaction> allTransactions = new ArrayList<>();
+        allTransactions.addAll(transactionsEnvoyees);
+        allTransactions.addAll(transactionsRecues);
+
+        // 🔹 Mapper en DTO
+        return allTransactions.stream()
+                .map(this::mapToResponse)
+                .toList();
+    }
+
+
 }

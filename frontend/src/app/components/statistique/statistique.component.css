@@ -1,0 +1,330 @@
+:root {
+  --primary-color: #16a34a;
+  --primary-dark: #15803d;
+  --primary-light: #dcfce7;
+  --sage-green: #84a98c;
+  --sage-green-dark: #6b8e6b;
+  --sage-green-light: #a3b8a7;
+  --sage-bg-light: #f0f4f1;
+  --sage-accent: #d4e6d7;
+  --gradient-primary: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+  --gradient-danger: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+  --gradient-success: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
+  --gradient-warning: linear-gradient(135deg, #ffc107 0%, #e0a800 100%);
+  --gradient-info: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+  --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.08);
+  --shadow-hover: 0 8px 30px rgba(0, 0, 0, 0.12);
+  --border-radius-lg: 16px;
+  --border-radius-md: 12px;
+  --border-radius-sm: 8px;
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Styles généraux */
+.container-fluid {
+  padding: 2rem;
+  background: linear-gradient(135deg, #f8faf9 0%, #f0f4f1 100%);
+  min-height: 100vh;
+}
+
+/* En-tête */
+.d-flex.justify-content-between {
+  background: white;
+  padding: 1.5rem 2rem;
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-soft);
+  margin-bottom: 2rem;
+  border-left: 4px solid var(--primary-color);
+}
+
+h2 {
+  color: var(--gray-900);
+  font-weight: 700;
+  font-size: 1.8rem;
+  margin: 0;
+}
+
+h2 i {
+  color: var(--primary-color);
+  background: var(--primary-light);
+  padding: 0.5rem;
+  border-radius: 50%;
+}
+
+/* Boutons */
+.btn {
+  border-radius: var(--border-radius-sm);
+  padding: 0.5rem 1.5rem;
+  font-weight: 600;
+  transition: var(--transition);
+  border: 2px solid transparent;
+}
+
+.btn-outline-primary {
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+}
+
+.btn-outline-primary:hover {
+  background: var(--primary-color);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover);
+}
+
+.btn-outline-success {
+  border-color: var(--success-color);
+  color: var(--success-color);
+}
+
+.btn-outline-success:hover {
+  background: var(--success-color);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover);
+}
+
+/* Cartes de statistiques */
+.card {
+  border: none;
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-soft);
+  transition: var(--transition);
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-hover);
+}
+
+.card.bg-primary { background: var(--gradient-primary); }
+.card.bg-danger { background: var(--gradient-danger); }
+.card.bg-success { background: var(--gradient-success); }
+.card.bg-warning { background: var(--gradient-warning); }
+.card.bg-info { background: var(--gradient-info); }
+
+.card-body {
+  padding: 1.5rem;
+  position: relative;
+}
+
+.card-body::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.text-white-50.small {
+  font-size: 0.9rem;
+  opacity: 0.9;
+  font-weight: 500;
+}
+
+.fs-4.fw-semibold {
+  font-size: 2rem !important;
+  font-weight: 700;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.fa-2x {
+  opacity: 0.8;
+  transition: var(--transition);
+}
+
+.card:hover .fa-2x {
+  transform: scale(1.1);
+  opacity: 1;
+}
+
+/* Graphiques */
+.demo-chart {
+  height: 400px;
+  width: 100%;
+  border-radius: var(--border-radius-md);
+}
+
+.card-header {
+  background: white;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  padding: 1.25rem 1.5rem;
+  border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0 !important;
+}
+
+.card-title {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--gray-900);
+}
+
+.card-title i {
+  color: var(--primary-color);
+  margin-right: 0.5rem;
+}
+
+/* Tableau */
+.table-responsive {
+  border-radius: var(--border-radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-soft);
+}
+
+.table {
+  margin: 0;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.table thead th {
+  background: var(--gradient-primary);
+  color: white;
+  font-weight: 600;
+  padding: 1rem 1.5rem;
+  border: none;
+  font-size: 0.95rem;
+}
+
+.table tbody td {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  transition: var(--transition);
+}
+
+.table tbody tr:hover td {
+  background: var(--sage-bg-light);
+  transform: scale(1.02);
+}
+
+.table tfoot td {
+  background: var(--sage-accent);
+  font-weight: 700;
+  padding: 1rem 1.5rem;
+}
+
+.text-success {
+  color: var(--success-color) !important;
+  font-weight: 600;
+}
+
+.text-danger {
+  color: #dc3545 !important;
+  font-weight: 600;
+}
+
+/* Loading spinner */
+.spinner-border {
+  width: 3rem;
+  height: 3rem;
+  border-width: 0.3em;
+  color: var(--primary-color);
+}
+
+.text-center.py-5 {
+  background: white;
+  border-radius: var(--border-radius-lg);
+  padding: 3rem !important;
+  box-shadow: var(--shadow-soft);
+}
+
+/* Alert */
+.alert {
+  border: none;
+  border-radius: var(--border-radius-md);
+  padding: 1.25rem 1.5rem;
+  box-shadow: var(--shadow-soft);
+  border-left: 4px solid #dc3545;
+  background: white;
+}
+
+.alert i {
+  margin-right: 0.5rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container-fluid {
+    padding: 1rem;
+  }
+  
+  .d-flex.justify-content-between {
+    flex-direction: column;
+    gap: 1.5rem;
+    text-align: center;
+    padding: 1.5rem;
+  }
+  
+  .demo-chart {
+    height: 300px;
+  }
+  
+  .card-body {
+    padding: 1.25rem;
+  }
+  
+  .table-responsive {
+    font-size: 0.9rem;
+  }
+  
+  .table thead th,
+  .table tbody td {
+    padding: 0.75rem 1rem;
+  }
+  
+  h2 {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .btn {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+  
+  .d-flex.justify-content-between > div {
+    width: 100%;
+  }
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card {
+  animation: fadeIn 0.6s ease-out;
+}
+
+.card:nth-child(2) { animation-delay: 0.1s; }
+.card:nth-child(3) { animation-delay: 0.2s; }
+.card:nth-child(4) { animation-delay: 0.3s; }
+
+/* Scrollbar personnalisée */
+.table-responsive::-webkit-scrollbar {
+  height: 8px;
+}
+
+.table-responsive::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+  background: var(--primary-color);
+  border-radius: 4px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-dark);
+}

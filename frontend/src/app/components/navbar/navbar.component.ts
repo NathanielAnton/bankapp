@@ -27,7 +27,9 @@ export class NavbarComponent implements OnInit {
     const currentRoute = this.router.url;
     if (currentRoute.includes('profile')) {
       this.activeTab = 'profile';
-    } else {
+    } else if (currentRoute.includes('statistique')){
+      this.activeTab = 'statistique';
+    }else {
       this.activeTab = 'accounts';
     }
   }

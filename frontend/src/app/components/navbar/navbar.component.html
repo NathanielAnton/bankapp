@@ -14,6 +14,14 @@
       Comptes
     </a>
     <a 
+      class="tab-item {{ activeTab === 'statistique' ? 'active' : '' }}" 
+      routerLink="/statistique"
+      (click)="setActiveTab('statistique')"
+    >
+      <i class="bi bi-graph-up"></i>
+      Statistique
+    </a>
+    <a 
       class="tab-item {{ activeTab === 'profile' ? 'active' : '' }}" 
       routerLink="/profile"
       (click)="setActiveTab('profile')"
