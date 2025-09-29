@@ -18,11 +18,9 @@ export class StatistiqueComponent {
   monthlyChartOption: EChartsOption = {};
   categoryChartOption: EChartsOption = {};
   balanceChartOption: EChartsOption = {};
-  chartOption!: EChartsOption;
 
   // Données
   monthlySummary: MonthlySummary[] = [];
-  globalStats: any = {};
   
   // États
   isLoading = true;
@@ -38,13 +36,6 @@ export class StatistiqueComponent {
   constructor(private statsService: TransactionStatsService) {}
 
   ngOnInit() {
-    this.chartOption = {
-      title: { text: 'Transactions par mois' },
-      tooltip: {},
-      xAxis: { type: 'category', data: ['Jan', 'Feb', 'Mar'] },
-      yAxis: { type: 'value' },
-      series: [{ type: 'line', data: [10, 20, 15] }]
-    };
     this.loadChartData();
   }
 
@@ -68,7 +59,6 @@ export class StatistiqueComponent {
         
         // Données pour le tableau
         this.monthlySummary = this.statsService.getMonthlySummary(transactions);
-        this.globalStats = this.statsService.getGlobalStats(transactions);
         
         this.isLoading = false;
       },
@@ -124,12 +114,5 @@ export class StatistiqueComponent {
 
   getTotalSolde(): number {
     return this.getTotalRevenus() - this.getTotalDepenses();
-  }
-
-  // Changer le thème
-  changeTheme(theme: string) {
-    this.theme = theme;
-    // Recharger les graphiques avec le nouveau thème
-    this.loadChartData();
   }
 }

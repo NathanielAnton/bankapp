@@ -42,9 +42,9 @@ export class TransactionStatsService {
   // Générer les options pour le graphique mensuel (barres)
   generateMonthlyChartOptions(transactions: any[]): EChartsOption {
     const monthlyData = this.groupByMonth(transactions);
-    const labels = Object.keys(monthlyData);
-    const revenusData = labels.map(month => monthlyData[month].revenus);
-    const depensesData = labels.map(month => monthlyData[month].depenses);
+    const labels = monthlyData.map(item => item.month);
+    const revenusData = monthlyData.map(item => item.revenus);
+    const depensesData = monthlyData.map(item => item.depenses);
 
     return {
       title: {
@@ -59,14 +59,16 @@ export class TransactionStatsService {
         formatter: (params: any) => {
           const data = params[0];
           const month = data.axisValue;
-          const revenus = monthlyData[month].revenus;
-          const depenses = monthlyData[month].depenses;
-          const solde = revenus - depenses;
+
+          const entry = monthlyData.find(item => item.month === month);
+            if (!entry) return '';
+
+          const solde = entry.revenus - entry.depenses;
           
           return `
             <strong>${month}</strong><br/>
-            Revenus: <span style="color: #28a745">${revenus.toFixed(2)}€</span><br/>
-            Dépenses: <span style="color: #dc3545">${depenses.toFixed(2)}€</span><br/>
+            Revenus: <span style="color: #28a745">${entry.revenus.toFixed(2)}€</span><br/>
+            Dépenses: <span style="color: #dc3545">${entry.depenses.toFixed(2)}€</span><br/>
             Solde: <span style="color: ${solde >= 0 ? '#28a745' : '#dc3545'}">${solde.toFixed(2)}€</span>
           `;
         }
@@ -177,9 +179,9 @@ export class TransactionStatsService {
   // Graphique de ligne pour l'évolution du solde
   generateBalanceChartOptions(transactions: any[]): EChartsOption {
     const monthlyData = this.groupByMonth(transactions);
-    const labels = Object.keys(monthlyData);
-    const soldeData = labels.map(month => 
-      monthlyData[month].revenus - monthlyData[month].depenses
+    const labels = monthlyData.map(item => item.month);
+    const soldeData = monthlyData.map(item => 
+      item.revenus - item.depenses
     );
 
     return {
@@ -231,32 +233,40 @@ export class TransactionStatsService {
     };
   }
 
-    // Grouper les transactions par mois
-    private groupByMonth(transactions: any[]): { [key: string]: { revenus: number, depenses: number } } {
-        const monthlyData: { [key: string]: { revenus: number, depenses: number } } = {};
+    // Grouper les transactions par mois et trier
+    private groupByMonth(transactions: any[]): { month: string, revenus: number, depenses: number }[] {
+      const monthlyData: { [key: string]: { revenus: number, depenses: number, date: Date } } = {};
 
-        transactions.forEach(transaction => {
+      transactions.forEach(transaction => {
         if (transaction.type === 'VIREMENT_INTERNE' || transaction.type === 'VIREMENT_EXTERNE') {
-            return;
+          return;
         }
 
         const date = new Date(transaction.dateTransaction);
         const monthKey = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}`;
         const monthLabel = this.getMonthLabel(date);
-        
-        if (!monthlyData[monthLabel]) {
-            monthlyData[monthLabel] = { revenus: 0, depenses: 0 };
+
+        if (!monthlyData[monthKey]) {
+          monthlyData[monthKey] = { revenus: 0, depenses: 0, date };
         }
 
         if (this.isRevenue(transaction.type)) {
-            monthlyData[monthLabel].revenus += transaction.montant;
+          monthlyData[monthKey].revenus += transaction.montant;
         } else {
-            monthlyData[monthLabel].depenses += Math.abs(transaction.montant);
+          monthlyData[monthKey].depenses += Math.abs(transaction.montant);
         }
-        });
+      });
 
-        return monthlyData;
+      // ✅ Transformer en tableau trié
+      return Object.keys(monthlyData)
+        .sort() // tri YYYY-MM
+        .map(key => ({
+          month: this.getMonthLabel(monthlyData[key].date),
+          revenus: monthlyData[key].revenus,
+          depenses: monthlyData[key].depenses
+        }));
     }
+
 
     // Grouper les transactions par catégorie
     private groupByCategory(transactions: any[]): CategorySummary[] {
@@ -316,35 +326,23 @@ export class TransactionStatsService {
   // Obtenir le résumé mensuel pour un tableau
   getMonthlySummary(transactions: any[]): MonthlySummary[] {
     const monthlyData = this.groupByMonth(transactions);
-    
-    return Object.entries(monthlyData).map(([month, data]) => ({
-      month,
-      revenus: data.revenus,
-      depenses: data.depenses,
-      solde: data.revenus - data.depenses
-    })).sort((a, b) => {
-      // Trier par date (du plus récent au plus ancien)
-      return new Date(b.month.split(' ')[1] + ' ' + b.month.split(' ')[0]).getTime() - 
-             new Date(a.month.split(' ')[1] + ' ' + a.month.split(' ')[0]).getTime();
-    });
-  }
 
-  // Statistiques globales
-  getGlobalStats(transactions: any[]) {
-    const monthlyData = this.groupByMonth(transactions);
-    const categoryData = this.groupByCategory(transactions);
-    
-    const totalRevenus = Object.values(monthlyData).reduce((sum, data) => sum + data.revenus, 0);
-    const totalDepenses = Object.values(monthlyData).reduce((sum, data) => sum + data.depenses, 0);
-    const totalSolde = totalRevenus - totalDepenses;
-    
-    return {
-      totalRevenus,
-      totalDepenses,
-      totalSolde,
-      nombreTransactions: transactions.length,
-      nombreMois: Object.keys(monthlyData).length,
-      categoriesUtilisees: categoryData.length
-    };
+    return monthlyData
+      .map(data => ({
+        month: data.month,
+        revenus: data.revenus,
+        depenses: data.depenses,
+        solde: data.revenus - data.depenses
+      }))
+      .sort((a, b) => {
+        const [moisA, anneeA] = a.month.split(' ');
+        const [moisB, anneeB] = b.month.split(' ');
+        const months = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin',
+                        'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'];
+        const dateA = new Date(parseInt(anneeA), months.indexOf(moisA));
+        const dateB = new Date(parseInt(anneeB), months.indexOf(moisB));
+
+        return dateB.getTime() - dateA.getTime();
+      });
   }
 }
