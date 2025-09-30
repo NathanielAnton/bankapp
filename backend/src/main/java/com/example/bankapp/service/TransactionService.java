@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.example.bankapp.security.JwtUtil;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -103,6 +104,12 @@ public class TransactionService {
         
         if (transaction.getDestinataireAccount() != null) {
             accountRepository.save(transaction.getDestinataireAccount());
+        }
+        
+        if (request.getDateTransaction() != null) {
+            transaction.setDateTransaction(request.getDateTransaction());
+        } else {
+            transaction.setDateTransaction(LocalDateTime.now());
         }
         
         Transaction savedTransaction = transactionRepository.save(transaction);

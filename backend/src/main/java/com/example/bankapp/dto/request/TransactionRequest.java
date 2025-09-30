@@ -1,6 +1,7 @@
 package com.example.bankapp.dto.request;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 public class TransactionRequest {
     private Long accountId;
@@ -9,6 +10,7 @@ public class TransactionRequest {
     private BigDecimal montant;
     private String description;
     private Long categorieId;
+    private LocalDateTime dateTransaction; 
 
     // Getters et Setters
     public Long getAccountId() { return accountId; }
@@ -28,4 +30,8 @@ public class TransactionRequest {
     
     public Long getCategorieId() { return categorieId; }
     public void setCategorieId(Long categorieId) { this.categorieId = categorieId; }
+    
+    public LocalDateTime getDateTransaction() { return dateTransaction;}
+    public void setDateTransaction() { this.dateTransaction = dateTransaction; }
+    
 }

@@ -9,6 +9,7 @@ export interface TransactionRequest {
   montant: number;
   description: string;
   categorieId?: number;
+  dateTransaction?: string;
 }
 
 export interface TransactionResponse {
