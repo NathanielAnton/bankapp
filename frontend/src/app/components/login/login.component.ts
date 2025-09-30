@@ -37,8 +37,13 @@ export class LoginComponent {
         if (response.token) {
           this.tokenService.setToken(response.token);
           localStorage.setItem('username', response.username);
-          localStorage.setItem('clientID', response.id);
-          this.router.navigate(['/dashboard']);
+          const role = this.tokenService.getRole();
+          if (role === 'ADMIN') {
+            this.router.navigate(['/admin']);
+          } else {
+            localStorage.setItem('clientID', response.id);
+            this.router.navigate(['/dashboard']);
+          }
         }
       },
       error: (error) => {
