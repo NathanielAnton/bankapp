@@ -1,0 +1,35 @@
+<nav class="navbar">
+  <div class="navbar-brand">
+    <h2>BANKAPP</h2>
+  </div>
+  
+  <div class="navbar-tabs">
+    <a 
+      class="tab-item {{ activeTab === 'accounts' ? 'active' : '' }}" 
+      routerLink="/admin"
+      (click)="setActiveTab('accounts')"
+    >
+      <i class="bi bi-wallet2"></i>
+      Comptes Clients
+    </a>
+    <a 
+      class="tab-item {{ activeTab === 'registre' ? 'active' : '' }}" 
+      routerLink="/admin"
+      (click)="setActiveTab('registre')"
+    >
+      <i class="bi bi-graph-up"></i>
+      Registre
+    </a>
+  </div>
+  
+  <div class="navbar-actions">
+    <button 
+      class="btn-disconnect"
+      (click)="disconnect()"
+      title="Se déconnecter"
+    >
+      <i class="bi bi-power"></i>
+      Déconnexion
+    </button>
+  </div>
+</nav>

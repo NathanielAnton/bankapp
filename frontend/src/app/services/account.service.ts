@@ -76,7 +76,7 @@ export class AccountService {
     return descriptions[type] || type;
   }
 
-   // Méthode pour obtenir les descriptions des statuts
+  // Méthode pour obtenir les descriptions des statuts
   getAccountStatusDescription(statut: string): string {
     const descriptions: { [key: string]: string } = {
       'ACTIF': 'Actif',
@@ -84,5 +84,10 @@ export class AccountService {
       'CLOTURE': 'Clôturé'
     };
     return descriptions[statut] || statut;
+  }
+
+  getAllAccounts(): Observable<Account[]> {
+    const headers = this.getAuthHeaders();
+    return this.http.get<Account[]>(`${this.apiUrl}`, { headers });
   }
 }

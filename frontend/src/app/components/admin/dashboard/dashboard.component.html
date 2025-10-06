@@ -1,1 +1,35 @@
-<p>dashboard works!</p>
+<app-navbar></app-navbar>
+
+<div class="container">
+  <h1>🏦 Tableau de bord Administrateur</h1>
+
+  <div *ngIf="loading">Chargement...</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+
+  <table *ngIf="!loading && accounts.length > 0" class="accounts-table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Client ID</th>
+        <th>Type</th>
+        <th>Solde (€)</th>
+        <th>Statut</th>
+        <th>Date ouverture</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let account of accounts">
+        <td>{{ account.id }}</td>
+        <td>{{ account.clientId }}</td>
+        <td>{{ account.type }}</td>
+        <td>{{ account.solde | number:'1.2-2' }}</td>
+        <td [ngClass]="getStatusClass(account.statut)">{{ account.statut }}</td>
+        <td>{{ formatDate(account.dateOuverture) }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div *ngIf="!loading && accounts.length === 0">
+    Aucun compte trouvé.
+  </div>
+</div>
