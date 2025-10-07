@@ -15,6 +15,7 @@
         <th>Solde (€)</th>
         <th>Statut</th>
         <th>Date ouverture</th>
+        <th>Actions</th>
       </tr>
     </thead>
     <tbody>
@@ -25,6 +26,40 @@
         <td>{{ account.solde | number:'1.2-2' }}</td>
         <td [ngClass]="getStatusClass(account.statut)">{{ account.statut }}</td>
         <td>{{ formatDate(account.dateOuverture) }}</td>
+        <td>
+            <div class="btn-group" role="group">
+              <!-- Boutons d'actions dynamiques -->
+              <ng-container *ngIf="getActionButtons(account).primary as primaryBtn">
+                <button 
+                  *ngIf="primaryBtn"
+                  [class]="'btn btn-sm ' + primaryBtn.class"
+                  (click)="primaryBtn.action()"
+                  [disabled]="isActionInProgress(account.id)">
+                  <span *ngIf="isActionInProgress(account.id)" class="spinner-border spinner-border-sm me-1"></span>
+                  {{ primaryBtn.text }}
+                </button>
+              </ng-container>
+
+              <ng-container *ngIf="getActionButtons(account).secondary as secondaryBtn">
+                <button 
+                  *ngIf="secondaryBtn"
+                  [class]="'btn btn-sm ' + secondaryBtn.class"
+                  (click)="secondaryBtn.action()"
+                  [disabled]="isActionInProgress(account.id)">
+                  {{ secondaryBtn.text }}
+                </button>
+              </ng-container>
+
+              <span *ngIf="getActionButtons(account).message" class="text-muted small">
+                {{ getActionButtons(account).message }}
+              </span>
+
+              <!-- Indicateur de chargement -->
+              <div *ngIf="isActionInProgress(account.id)" class="ms-2">
+                <small class="text-muted">En cours...</small>
+              </div>
+            </div>
+        </td>
       </tr>
     </tbody>
   </table>

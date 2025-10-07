@@ -57,4 +57,32 @@ public class AccountController {
         String token = authHeader.substring(7);
         return ResponseEntity.ok(accountService.getMyAccounts(token));
     }
+    
+    // Changes about Status
+    @PostMapping("/{accountId}/bloquer")
+    public ResponseEntity<?> bloquerCompte(@PathVariable Long accountId) {
+        try {
+            return ResponseEntity.ok(accountService.bloquerCompte(accountId));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/{accountId}/debloquer")
+    public ResponseEntity<?> debloquerCompte(@PathVariable Long accountId) {
+        try {
+            return ResponseEntity.ok(accountService.debloquerCompte(accountId));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/{accountId}/cloturer")
+    public ResponseEntity<?> cloturerCompte(@PathVariable Long accountId) {
+        try {
+            return ResponseEntity.ok(accountService.cloturerCompte(accountId));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }

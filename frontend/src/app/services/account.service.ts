@@ -59,7 +59,7 @@ export class AccountService {
     return this.http.get<any[]>(`${this.apiUrl}/me`, { headers });
   }
 
-   createAccount(accountRequest: AccountRequest): Observable<Account> {
+  createAccount(accountRequest: AccountRequest): Observable<Account> {
     const headers = this.getAuthHeaders();
     return this.http.post<Account>(this.apiUrl, accountRequest, { headers });
   }
@@ -76,7 +76,6 @@ export class AccountService {
     return descriptions[type] || type;
   }
 
-  // Méthode pour obtenir les descriptions des statuts
   getAccountStatusDescription(statut: string): string {
     const descriptions: { [key: string]: string } = {
       'ACTIF': 'Actif',
@@ -89,5 +88,20 @@ export class AccountService {
   getAllAccounts(): Observable<Account[]> {
     const headers = this.getAuthHeaders();
     return this.http.get<Account[]>(`${this.apiUrl}`, { headers });
+  }
+
+  bloquerCompte(accountId: number): Observable<Account> {
+    const headers = this.getAuthHeaders();
+    return this.http.post<Account>(`${this.apiUrl}/${accountId}/bloquer`, {}, { headers });
+  }
+
+  debloquerCompte(accountId: number): Observable<Account> {
+    const headers = this.getAuthHeaders();
+    return this.http.post<Account>(`${this.apiUrl}/${accountId}/debloquer`, {}, { headers });
+  }
+
+  cloturerCompte(accountId: number): Observable<Account> {
+    const headers = this.getAuthHeaders();
+    return this.http.post<Account>(`${this.apiUrl}/${accountId}/cloturer`, {}, { headers });
   }
 }

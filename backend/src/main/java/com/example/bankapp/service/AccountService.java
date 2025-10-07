@@ -116,4 +116,58 @@ public class AccountService {
         dto.setDateOuverture(account.getDateOuverture());
         return dto;
     }
+    
+    private boolean isValidStatusTransition(Account.StatutCompte currentStatus, Account.StatutCompte newStatus) {
+        // Règles simples :
+        // - Un compte clôturé ne peut plus changer de statut
+        // - Toutes les autres transitions sont autorisées
+        return currentStatus != Account.StatutCompte.CLOTURE;
+    }
+
+    private void validateStatusChange(Account account, Account.StatutCompte newStatus) {
+        // Validation minimale : vérifier la clôture (à décommenter pour appliquer la condition)
+    	
+        /* if (newStatus == Account.StatutCompte.CLOTURE && 
+            account.getSolde().compareTo(BigDecimal.ZERO) != 0) {
+            throw new RuntimeException(
+                "Impossible de clôturer le compte. Solde actuel: " + account.getSolde() + "€"
+            );
+        } */
+    }
+
+    private void logStatusChange(Long accountId, Account.StatutCompte ancienStatut, Account.StatutCompte nouveauStatut) {
+        System.out.println("Statut compte " + accountId + " : " + ancienStatut + " → " + nouveauStatut);
+    }
+    
+    public AccountResponse bloquerCompte(Long accountId) {
+        return updateAccountStatus(accountId, Account.StatutCompte.BLOQUE);
+    }
+
+    public AccountResponse debloquerCompte(Long accountId) {
+        return updateAccountStatus(accountId, Account.StatutCompte.ACTIF);
+    }
+
+    public AccountResponse cloturerCompte(Long accountId) {
+        return updateAccountStatus(accountId, Account.StatutCompte.CLOTURE);
+    }
+
+    private AccountResponse updateAccountStatus(Long accountId, Account.StatutCompte newStatus) {
+        Account account = accountRepository.findById(accountId)
+                .orElseThrow(() -> new RuntimeException("Compte non trouvé avec l'id: " + accountId));
+
+        if (!isValidStatusTransition(account.getStatut(), newStatus)) {
+            throw new RuntimeException("Transition de statut non autorisée: " + 
+                    account.getStatut().getDescription() + " → " + newStatus.getDescription());
+        }
+
+        validateStatusChange(account, newStatus);
+
+        Account.StatutCompte ancienStatut = account.getStatut();
+        account.setStatut(newStatus);
+        
+        Account updatedAccount = accountRepository.save(account);
+        logStatusChange(accountId, ancienStatut, newStatus);
+        
+        return mapToResponse(updatedAccount);
+    }
 }
